@@ -65,7 +65,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @TeleOp(name="Concept: Robot Hardware Class", group="Robot")
-@Disabled
+
 public class ConceptExternalHardwareClass extends LinearOpMode {
 
     // Create a RobotHardware object to be used to access robot hardware.
