@@ -1,0 +1,7 @@
+Files:
+Friar Bot - The test bots main code
+TestAutoPixel - Made by Logan r on 11/11/23. Use left bumper to automaticly go to april tags.
+Main - Main bot code - DO NOT TYPE EXPERIMENTAL CODE HERE
+
+Driver Station Bot Presets:
+PowerPlay Teleop - Test Bot main [i think]
