@@ -235,9 +235,9 @@ public class Main extends LinearOpMode {
                 }
 
                 if (gamepad2.x) {
-                    leftGripperPos += 0.05;
-                } else if (gamepad2.a) {
                     leftGripperPos -= 0.05;
+                } else if (gamepad2.a) {
+                    leftGripperPos += 0.05;
                 }
                 if (leftGripperPos > 0.6) {
                     leftGripperPos = 0.3;
@@ -289,9 +289,10 @@ public class Main extends LinearOpMode {
             //DRONE SHOOTER // JOINT GAMEPAD CONTROLED
             if (gamepad1.left_bumper && gamepad2.left_bumper) {
                 //ADD DRONE SERVO HERE
-                shooter.setPosition(0.4);
+                shooter.setPosition(0.5);
+            } else {
+                shooter.setPosition(0.44);
             }
-            shooter.setPosition(shooter.getPosition());
             telemetry.addData("DRONE: ", shooter.getPosition());
 
             /* OLD GRIPPER CODE
