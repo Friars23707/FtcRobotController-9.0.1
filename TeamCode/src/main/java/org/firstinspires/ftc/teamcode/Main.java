@@ -224,14 +224,17 @@ public class Main extends LinearOpMode {
             if (gp2Mode == 0) {
 
                 if (gamepad2.dpad_down) { //INTAKE
-                    armTarget = 0;
-                    wristTarget = 0;
+                    armTarget = 20;
+                    wristTarget = 40;
                 } else if (gamepad2.dpad_left) { //HOME
                     armTarget = 250;
                     wristTarget = 0;
                 } else if (gamepad2.dpad_up) { //SCORE
                     armTarget = 2450;
                     wristTarget = 1700;
+                } else if (gamepad2.dpad_right) { //SCORE-LOW
+                    armTarget = 2800;
+                    wristTarget = 1300;
                 }
 
                 if (gamepad2.x) {
