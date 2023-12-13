@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Autonomous(name = "RedNearTest", group = "LogansTest")
 public class RedNearTest extends LinearOpMode {
-    HardwareMap no;
     @Override
     public void runOpMode() throws InterruptedException {
-        AutonClass ac = new AutonClass(no);
+        AutonClass ac = new AutonClass(hardwareMap);
         waitForStart();
         ac.spikePlace();
         ac.encoderDrive(2, 2, 2, 2); //Move to board
