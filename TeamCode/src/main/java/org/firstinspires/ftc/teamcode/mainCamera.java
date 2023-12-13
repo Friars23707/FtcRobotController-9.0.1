@@ -22,7 +22,7 @@ public class mainCamera extends LinearOpMode {
     }
 
     //Detecting if there is a team prop
-    public int propDetection() {
+    public void propDetection() {
         boolean propIsDetected = false;
         int location = 0;
         List<Recognition> currentRecognitions = tfod.getRecognitions(); // List of recognitions
