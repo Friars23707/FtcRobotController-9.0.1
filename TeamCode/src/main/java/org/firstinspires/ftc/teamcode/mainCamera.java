@@ -18,12 +18,13 @@ public class mainCamera extends LinearOpMode {
     public mainCamera() {
         webcamOne = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
 
-        webcamTwo = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
+        webcamTwo = VisionPortal.easyCreateWithDefaults(hardwareMap.get(WebcamName.class, "Webcam 2"), tfod);
     }
 
     //Detecting if there is a team prop
     public int propDetection() {
         boolean propIsDetected = false;
+        int location = 0;
         List<Recognition> currentRecognitions = tfod.getRecognitions(); // List of recognitions
         for (Recognition recognition : currentRecognitions) {
             double x = (recognition.getLeft() + recognition.getRight()) / 2; // What do they do??
@@ -31,7 +32,8 @@ public class mainCamera extends LinearOpMode {
             double propConfidence = recognition.getConfidence(); // Prop detection confidence
 
         }
-    }
+        return location;
+    };
 
     @Override
     public void runOpMode() throws InterruptedException {

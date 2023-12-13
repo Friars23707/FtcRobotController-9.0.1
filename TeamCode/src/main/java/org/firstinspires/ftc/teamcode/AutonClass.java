@@ -1,8 +1,14 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 public class AutonClass extends LinearOpMode {
@@ -17,6 +23,8 @@ public class AutonClass extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
 
+    public SampleMecanumDrive drive = null;
+
     // Calculate the COUNTS_PER_INCH for your specific drive train.
     // Go to your motor vendor website to determine your motor's COUNTS_PER_MOTOR_REV
     // For external drive gearing, set DRIVE_GEAR_REDUCTION as needed.
@@ -29,9 +37,11 @@ public class AutonClass extends LinearOpMode {
     final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
     final double DRIVE_SPEED = 0.6;
     final double TURN_SPEED = 0.5;
-    public AutonClass() {
 
-        // Initialize the drive system variables.
+    //HardwareMap yes;
+    public AutonClass(HardwareMap no) {
+
+        /* Initialize the drive system variables.
         leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
@@ -54,11 +64,18 @@ public class AutonClass extends LinearOpMode {
 
         leftArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+*/
+        drive = new SampleMecanumDrive(no);
 
     }
 
     public void spikePlace() {
-        telemetry.addData("yuppie", "hi");
+        telemetry.addData("SPIKE PLACING", ": TRUE");
+        telemetry.update();
+        Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
+                .forward(5)
+                .build();
+        drive.followTrajectory(trajectoryForward);
     }
     public void boardPlace() {
         telemetry.addData("j", "h");
@@ -93,5 +110,6 @@ public class AutonClass extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         /*This just needs to exist so
         that we can use linearOpMode vars*/
+
     }
 }
