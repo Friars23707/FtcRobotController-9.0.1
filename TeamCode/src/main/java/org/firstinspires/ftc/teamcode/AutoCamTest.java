@@ -22,7 +22,7 @@ public class AutoCamTest extends LinearOpMode {
         tfod = TfodProcessor.easyCreateWithDefaults();
         if (USE_WEBCAM) {
             webcamOne = VisionPortal.easyCreateWithDefaults(
-                    hardwareMap.get(WebcamName.class, "Webcam 1"), tfod); nb
+                    hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
         } else {
         webcamOne = VisionPortal.easyCreateWithDefaults(
                 BuiltinCameraDirection.BACK, tfod);
