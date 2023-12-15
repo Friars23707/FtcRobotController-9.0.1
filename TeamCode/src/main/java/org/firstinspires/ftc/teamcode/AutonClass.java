@@ -70,10 +70,10 @@ public class AutonClass extends LinearOpMode {
     }
 
     public void spikePlace() {
-        telemetry.addData("SPIKE PLACING", ": TRUE");
-        telemetry.update();
+        /*telemetry.addData("SPIKE PLACING", ": TRUE");
+        telemetry.update();*/
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
-                .forward(5)
+                .forward(25)
                 .build();
         drive.followTrajectory(trajectoryForward);
     }

@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.Angle;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -84,6 +85,17 @@ public class TrackingWheelLateralDistanceTuner extends LinearOpMode {
         telemetry.update();
 
         waitForStart();
+
+        DcMotor leftArm = hardwareMap.get(DcMotor.class, "arm_motor_left"); // E0
+        DcMotor rightArm = hardwareMap.get(DcMotor.class, "arm_motor_right"); // E1
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        leftArm.setTargetPosition(40);
+        rightArm.setTargetPosition(40);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         if (isStopRequested()) return;
 

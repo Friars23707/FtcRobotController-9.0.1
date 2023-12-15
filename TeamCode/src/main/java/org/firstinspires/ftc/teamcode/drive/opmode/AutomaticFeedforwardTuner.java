@@ -11,6 +11,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -44,6 +45,17 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
             RobotLog.setGlobalErrorMsg("Feedforward constants usually don't need to be tuned " +
                     "when using the built-in drive motor velocity PID.");
         }
+
+        DcMotor leftArm = hardwareMap.get(DcMotor.class, "arm_motor_left"); // E0
+        DcMotor rightArm = hardwareMap.get(DcMotor.class, "arm_motor_right"); // E1
+        leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        leftArm.setTargetPosition(40);
+        rightArm.setTargetPosition(40);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().getTelemetry());
 
