@@ -12,7 +12,6 @@ import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 @Autonomous(name = "AutoCamTest", group = "CameraTest")
 public class AutoCamTest extends LinearOpMode {
-    private static final boolean USE_WEBCAM = true;
     private TfodProcessor tfod;
 
     final int RESOLUTION_WIDTH = 640;
@@ -20,14 +19,9 @@ public class AutoCamTest extends LinearOpMode {
     VisionPortal webcamOne;
     private void initTfod() {
         tfod = TfodProcessor.easyCreateWithDefaults();
-        if (USE_WEBCAM) {
-            webcamOne = VisionPortal.easyCreateWithDefaults(
-                    hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
-        } else {
         webcamOne = VisionPortal.easyCreateWithDefaults(
-                BuiltinCameraDirection.BACK, tfod);
-        }
-    }
+                hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
+       }
     @Override
     public void runOpMode() {
 
