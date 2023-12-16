@@ -6,6 +6,7 @@
 
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
         google()
     }
@@ -19,6 +20,7 @@ buildscript {
 // google() repository beginning with version 3.2 of the Android Gradle Plugin
 allprojects {
     repositories {
+        jcenter()
         mavenCentral()
         google()
     }
@@ -26,4 +28,7 @@ allprojects {
 
 repositories {
     mavenCentral()
+    jcenter()
+    google()
 }
+
