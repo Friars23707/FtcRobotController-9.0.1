@@ -73,9 +73,14 @@ public class AutonClass extends LinearOpMode {
         /*telemetry.addData("SPIKE PLACING", ": TRUE");
         telemetry.update();*/
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
-                .forward(25)
+                .forward(53)
                 .build();
         drive.followTrajectory(trajectoryForward);
+        Trajectory trajectoryRight = drive.trajectoryBuilder(new Pose2d())
+                .strafeRight(102)
+                .build();
+        drive.followTrajectory(trajectoryForward);
+        drive.followTrajectory(trajectoryRight);
     }
     public void boardPlace() {
         telemetry.addData("j", "h");
