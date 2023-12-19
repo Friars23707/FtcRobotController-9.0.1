@@ -9,6 +9,7 @@ import android.graphics.ImageFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.hardware.Camera.Size;
+import android.graphics.Color;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -43,7 +44,7 @@ public class rawCam extends LinearOpMode {
 
         while (opModeIsActive()) {
             // wait and pray to God this works
-            telemetry.addData("color", getColor(300, 100));
+            telemetry.addData("color", getRedColor(300, 100));
             telemetry.update();
             sleep(1000);
         }
@@ -57,6 +58,11 @@ public class rawCam extends LinearOpMode {
 
     public int getColor(int x, int y) {
         return bitmap.getPixel(x, y);
+    }
+
+    public int getRedColor(int x, int y) {
+        int color = bitmap.getPixel(x, y);
+        return Color.red(color);
     }
 
     private void decodeYUV420SP(int[] rgb, byte[] yuv420sp, int width, int height) {
@@ -81,7 +87,7 @@ public class rawCam extends LinearOpMode {
                 if (g < 0) g = 0; else if (g > 262143) g = 262143;
                 if (b < 0) b = 0; else if (b > 262143) b = 262143;
 
-                rgb[yp] = r;//0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
+                rgb[yp] = 0xff000000 | ((r << 6) & 0xff0000) | ((g >> 2) & 0xff00) | ((b >> 10) & 0xff);
             }
         }
     }
