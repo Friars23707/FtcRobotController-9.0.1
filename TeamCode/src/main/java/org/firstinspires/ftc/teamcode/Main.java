@@ -326,7 +326,6 @@ public class Main extends LinearOpMode {
         }
     }
     private void initTfod() {
-
         // Create the TensorFlow processor the easy way.
         tfod = TfodProcessor.easyCreateWithDefaults();
 
