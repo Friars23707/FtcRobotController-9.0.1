@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -71,16 +72,27 @@ public class AutonClass extends LinearOpMode {
 
     public void spikePlace() {
         /*telemetry.addData("SPIKE PLACING", ": TRUE");
-        telemetry.update();*/
+        telemetry.update();
         Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
-                .forward(53)
+                .back(53)
                 .build();
         drive.followTrajectory(trajectoryForward);
+
         Trajectory trajectoryRight = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(102)
+                .strafeLeft(82)
                 .build();
-        drive.followTrajectory(trajectoryForward);
         drive.followTrajectory(trajectoryRight);
+
+        Trajectory trajTurnRight = drive.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(-90)))
+                .build();
+        drive.followTrajectory(trajTurnRight);*/
+
+        Trajectory spl = drive.trajectoryBuilder(new Pose2d())
+                .splineTo(new Vector2d(-53, 0), Math.toRadians(90))
+                .splineTo(new Vector2d(-53, 100), 0)
+                .build();
+        drive.followTrajectory(spl);
     }
     public void boardPlace() {
         telemetry.addData("j", "h");
