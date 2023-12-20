@@ -224,8 +224,8 @@ public class Main extends LinearOpMode {
             if (gp2Mode == 0) {
 
                 if (gamepad2.dpad_down) { //INTAKE
-                    armTarget = 20;
-                    wristTarget = 40;
+                    armTarget = 0;
+                    wristTarget = 0;
                 } else if (gamepad2.dpad_left) { //HOME
                     armTarget = 250;
                     wristTarget = 0;
