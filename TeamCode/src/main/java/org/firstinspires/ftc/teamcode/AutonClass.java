@@ -9,7 +9,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 
 public class AutonClass extends LinearOpMode {
@@ -70,58 +72,55 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void spikePlace() {
-        /*telemetry.addData("SPIKE PLACING", ": TRUE");
+    public void spikePlace(Telemetry telemetry) {
+        telemetry.addData("Spike", "Yes");
         telemetry.update();
-        Trajectory trajectoryForward = drive.trajectoryBuilder(new Pose2d())
+
+        TrajectorySequence trajTurnRight = drive.trajectorySequenceBuilder(new Pose2d())
                 .back(53)
+                .waitSeconds(0.3)
+                .turn(Math.toRadians(-90))
+                .back(82)
+                .waitSeconds(0.3)
+                .strafeLeft(20)
                 .build();
-        drive.followTrajectory(trajectoryForward);
-
-        Trajectory trajectoryRight = drive.trajectoryBuilder(new Pose2d())
-                .strafeLeft(82)
-                .build();
-        drive.followTrajectory(trajectoryRight);
-
-        Trajectory trajTurnRight = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(-90)))
-                .build();
-        drive.followTrajectory(trajTurnRight);*/
-
-        Trajectory spl = drive.trajectoryBuilder(new Pose2d())
-                .splineTo(new Vector2d(-53, 0), Math.toRadians(90))
-                .splineTo(new Vector2d(-53, 100), 0)
-                .build();
-        drive.followTrajectory(spl);
+        drive.followTrajectorySequence(trajTurnRight);
     }
+
     public void boardPlace() {
         telemetry.addData("j", "h");
     }
 
-    public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
-                             double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
-
-        // Ensure that the OpMode is still active
-        if (opModeIsActive()) {
-
-
-            // Stop all motion;
-            leftFrontDrive.setPower(0);
-            leftBackDrive.setPower(0);
-            rightFrontDrive.setPower(0);
-            rightBackDrive.setPower(0);
-
-            // Turn off RUN_TO_POSITION
-            leftFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            leftBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightFrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            rightBackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            sleep(250);   // optional pause after each move.
-        }
+    //Basic RR Functions for all classes to use.
+    public void rrFoward(int inches) {
+        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(inches)
+                .build();
+        drive.followTrajectorySequence(simpleTraj);
+    }
+    public void rrBack(int inches) {
+        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
+                .back(inches)
+                .build();
+        drive.followTrajectorySequence(simpleTraj);
+    }
+    public void rrStrafeLeft(int inches) {
+        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
+                .strafeLeft(inches)
+                .build();
+        drive.followTrajectorySequence(simpleTraj);
+    }
+    public void rrStrafeRight(int inches) {
+        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
+                .strafeRight(inches)
+                .build();
+        drive.followTrajectorySequence(simpleTraj);
+    }
+    public void rrTurn(int degrees) {
+        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
+                .turn(Math.toRadians(degrees))
+                .build();
+        drive.followTrajectorySequence(simpleTraj);
     }
 
     public void runOpMode() throws InterruptedException {

@@ -10,10 +10,17 @@ public class RedNearTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         AutonClass ac = new AutonClass(hardwareMap);
         waitForStart();
-        ac.spikePlace();
-        ac.encoderDrive(2, 2, 2, 2); //Move to board
+        ac.spikePlace(telemetry);
+
+        //Move to board
+            ac.rrStrafeLeft(15);
+            ac.rrTurn(-90);
+            ac.rrStrafeLeft(28);
+
         ac.boardPlace();
-        ac.encoderDrive(2,2,2,2); //Move out of the way
+
+        //Move out of the way
+            ac.rrStrafeLeft(29);
     }
 
 }
