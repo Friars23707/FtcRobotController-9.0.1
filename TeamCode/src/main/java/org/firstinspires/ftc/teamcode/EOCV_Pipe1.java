@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Color;
+
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -13,6 +15,7 @@ import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
 
 public class EOCV_Pipe1 extends OpenCvPipeline {
@@ -20,7 +23,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
     int Final_Result = 0;
 
     Mat mat = new Mat();
-    Rect leftROI = new Rect(new Point(100, 100), new Point(300, 100));
+    Rect leftROI = new Rect(new Point(100, 100), new Point(300, 300));
     Mat leftMat;
     Rect rightROI = new Rect(new Point(100, 100), new Point(300, 100));
     Mat rightMat;
@@ -35,17 +38,27 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         int cameraViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         cam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraViewId);
         cam.setPipeline(this);
-        cam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+        cam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                cam.startStreaming(1280,720, OpenCvCameraRotation.UPRIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {}
+        });
     }
     @Override
     public Mat processFrame(Mat input) {
 
         //THRESHOLD
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGBA2BGR);
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_RGB2HSV);
+        //Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGBA2BGR);
+        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
-        Scalar lowerBound = new Scalar(0, 70, 60);
-        Scalar upperBound = new Scalar(15.0 / 2, 255, 255);
+        Scalar lowerBound = new Scalar(1, 60, 70);
+        Scalar upperBound = new Scalar(15, 100, 100);
         Core.inRange(mat, lowerBound, upperBound, mat);
 
         //DIVIDE
@@ -75,7 +88,16 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
             Final_Result = 4;
         }
 
-        return null;
+        //DRAW RECTS
+        Imgproc.rectangle(input, new Point(100, 100), new Point(300, 300), new Scalar(0, 255, 0), 5);
+
+        telemetry.addData("RESULT", Final_Result);
+        telemetry.addData("LEFT", leftVal);
+        telemetry.addData("RIGHT", rightVal);
+        telemetry.addData("CENTER", centerVal);
+        telemetry.update();
+
+        return input;
     }
 
     public int getFinal_Result() {
