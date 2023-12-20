@@ -65,6 +65,11 @@ public class rawCam extends LinearOpMode {
         return Color.red(color);
     }
 
+	public int getBlueColor(int x, int y) {
+        int color = bitmap.getPixel(x, y);
+        return Color.blue(color);
+    }
+
     private void decodeYUV420SP(int[] rgb, byte[] yuv420sp, int width, int height) {
         final int frameSize = width * height;
 
