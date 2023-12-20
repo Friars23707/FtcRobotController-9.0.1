@@ -43,18 +43,18 @@ public class rawCam extends LinearOpMode {
         camera.startPreview();
 
         while (opModeIsActive()) {
-            // wait and pray to God this works
-            telemetry.addData("color", getRedColor(300, 100));
+            // 720p = 1280 x 720
+            telemetry.addData("color", getRedColor(640, 360)); // center of camera for now
             telemetry.update();
             sleep(1000);
         }
 
     }
 
-    /*public void stop() {
+    public void stopCam() { // when no more need for camera close it so no more memory gets leaked
         camera.stopPreview();
         camera.release();
-    }*/
+    }
 
     public int getColor(int x, int y) {
         return bitmap.getPixel(x, y);
