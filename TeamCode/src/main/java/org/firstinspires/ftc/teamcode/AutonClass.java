@@ -29,11 +29,11 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void spikePlace(Telemetry telemetry) {
-        telemetry.addData("Spike", "Yes");
-        telemetry.update();
+    public void spikePlace() {
 
-        TrajectorySequence trajTurnRight = drive.trajectorySequenceBuilder(new Pose2d())
+        getSpikeMark();
+
+        TrajectorySequence trajMove = drive.trajectorySequenceBuilder(new Pose2d())
                 .back(53)
                 .waitSeconds(0.3)
                 .turn(Math.toRadians(-90))
@@ -41,11 +41,7 @@ public class AutonClass extends LinearOpMode {
                 .waitSeconds(0.3)
                 .strafeLeft(20)
                 .build();
-        drive.followTrajectorySequence(trajTurnRight);
-    }
-
-    public void boardPlace() {
-        telemetry.addData("j", "h");
+        drive.followTrajectorySequence(trajMove);
     }
 
     public void getSpikeMark() {
@@ -54,6 +50,10 @@ public class AutonClass extends LinearOpMode {
             spikeMark = pipe.getFinal_Result();
             sleep(10);
         }
+    }
+
+    public void boardPlace() {
+        telemetry.addData("j", "h");
     }
 
     //Basic RR Functions for all classes to use.
