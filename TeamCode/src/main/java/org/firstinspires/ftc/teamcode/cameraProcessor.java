@@ -32,10 +32,20 @@ public class cameraProcessor extends LinearOpMode {
 
     public void runOpMode() {
         waitForStart();
+        sleep(10);
 
         CameraManager manager = (CameraManager) hardwareMap.appContext.getSystemService(Context.CAMERA_SERVICE);
         try {
-            String cameraId = manager.getCameraIdList()[0];
+            String[] cameraIdList = manager.getCameraIdList();
+            String cameraId = "";
+            if (cameraIdList.length > 0) {
+                cameraId = cameraIdList[0];
+                // Continue with your code
+            } else {
+                // Handle the case when no camera is available
+                stopCam();
+            }
+
 
             if (ContextCompat.checkSelfPermission(hardwareMap.appContext, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 manager.openCamera(cameraId, new CameraDevice.StateCallback() {
