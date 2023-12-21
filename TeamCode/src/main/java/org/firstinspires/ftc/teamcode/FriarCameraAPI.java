@@ -14,6 +14,8 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.media.Image;
 import android.media.ImageReader;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Size;
 import android.view.Surface;
 
@@ -51,6 +53,11 @@ public class FriarCameraAPI extends LinearOpMode {
             bitmap = Bitmap.createBitmap(previewSize.getWidth(), previewSize.getHeight(), Bitmap.Config.ARGB_8888);
 
             imageReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
+
+            HandlerThread handlerThread = new HandlerThread("Camera2API");
+            handlerThread.start();
+            Handler handler = new Handler(handlerThread.getLooper());
+
             imageReader.setOnImageAvailableListener(reader -> {
                 Image image = reader.acquireLatestImage();
                 if (image != null) {
@@ -61,7 +68,7 @@ public class FriarCameraAPI extends LinearOpMode {
                     bitmap.setPixels(pixels, 0, previewSize.getWidth(), 0, 0, previewSize.getWidth(), previewSize.getHeight());
                     image.close();
                 }
-            }, null);
+            }, handler);
 
             if (ContextCompat.checkSelfPermission(hardwareMap.appContext, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return;
