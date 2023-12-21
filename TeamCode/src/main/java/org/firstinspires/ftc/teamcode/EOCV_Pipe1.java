@@ -23,6 +23,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
     int Final_Result = 0;
 
     Mat mat = new Mat();
+
     Rect leftROI = new Rect(new Point(100, 100), new Point(300, 300));
     Mat leftMat;
     Rect rightROI = new Rect(new Point(100, 100), new Point(300, 100));
@@ -71,12 +72,6 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         double rightVal = Math.round(Core.mean(rightMat).val[2] / 255);
         double centerVal = Math.round(Core.mean(centerMat).val[2] / 255);
 
-        //RELEASE
-        leftMat.release();
-        rightMat.release();
-        centerMat.release();
-        mat.release();
-
         //COMPARE
         if (leftVal > rightVal && leftVal > centerVal) {
             Final_Result = 1;
@@ -87,6 +82,12 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         } else {
             Final_Result = 4;
         }
+
+        //RELEASE
+        leftMat.release();
+        rightMat.release();
+        centerMat.release();
+        mat.release();
 
         //DRAW RECTS
         Imgproc.rectangle(input, new Point(100, 100), new Point(300, 300), new Scalar(0, 255, 0), 5);

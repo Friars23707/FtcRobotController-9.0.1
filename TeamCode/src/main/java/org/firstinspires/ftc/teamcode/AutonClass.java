@@ -44,30 +44,6 @@ public class AutonClass extends LinearOpMode {
     //HardwareMap yes;
     public AutonClass(HardwareMap no) {
 
-        /* Initialize the drive system variables.
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        rightArmMotor = hardwareMap.get(DcMotor.class, "arm_motor_right");
-        leftArmMotor = hardwareMap.get(DcMotor.class, "arm_motor_left");
-
-        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
-        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
-        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
-        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightArmMotor.setDirection(DcMotor.Direction.FORWARD);
-        leftArmMotor.setDirection(DcMotor.Direction.REVERSE);
-
-        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-*/
         drive = new SampleMecanumDrive(no);
 
     }
@@ -129,3 +105,30 @@ public class AutonClass extends LinearOpMode {
 
     }
 }
+
+
+
+        /* Initialize the drive system variables.
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
+        rightArmMotor = hardwareMap.get(DcMotor.class, "arm_motor_right");
+        leftArmMotor = hardwareMap.get(DcMotor.class, "arm_motor_left");
+
+        // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
+        // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
+        // Note: The settings here assume direct drive on left and right wheels.  Gear Reduction or 90 Deg drives may require direction flips
+        leftFrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
+        rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightArmMotor.setDirection(DcMotor.Direction.FORWARD);
+        leftArmMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        leftArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+*/
