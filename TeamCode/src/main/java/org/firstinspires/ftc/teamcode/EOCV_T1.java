@@ -12,16 +12,35 @@ public class EOCV_T1 extends LinearOpMode {
         waitForStart();
         sleep(500);
 
-        double result = 0;
-        while (result == 0 || result == 4 || !isStopRequested()) {
+        int result = 0;
+        while (result == 0 || result == 4) {
+            if (isStopRequested()) {
+                break;
+            }
             result = pipe.getFinal_Result();
             sleep(100);
         }
-        if (isStopRequested()) {
-            return;
-        }
-
         pipe.stop();
+
+        String poses= "";
+        switch (result){
+            case 1: {
+                poses = "LEFT";
+                break;
+            }
+            case 2: {
+                poses = "CENTER";
+                break;
+            }
+            case 3: {
+                poses = "RIGHT";
+                break;
+            }
+        }
+        
+        telemetry.addData("SPIKE", result+poses);
+        telemetry.update();
+
         sleep(5000000);
     }
 }
