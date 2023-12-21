@@ -24,15 +24,19 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
 
     Mat mat = new Mat();
 
-    Rect leftROI = new Rect(new Point(100, 100), new Point(300, 300));
+    Rect leftROI = new Rect(new Point(100, 200), new Point(350, 600));
     Mat leftMat;
-    Rect rightROI = new Rect(new Point(100, 100), new Point(300, 100));
+    Rect rightROI = new Rect(new Point(1100, 200), new Point(800, 600));
     Mat rightMat;
-    Rect centerROI = new Rect(new Point(100, 100), new Point(300, 100));
+    Rect centerROI = new Rect(new Point(425, 200), new Point(700, 600));
     Mat centerMat;
 
     private Telemetry telemetry;
     private OpenCvCamera cam;
+
+    public Scalar hsv(double h, double s, double v) {
+        return new Scalar(h/2.0, s/100.0*255, v/100.0*255);
+    }
 
     public EOCV_Pipe1(HardwareMap hardwareMap, Telemetry t) {
         telemetry = t;
@@ -58,8 +62,8 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         //Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGBA2BGR);
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
 
-        Scalar lowerBound = new Scalar(1, 60, 70);
-        Scalar upperBound = new Scalar(15, 100, 100);
+        Scalar lowerBound = hsv(1.0, 0.0, 0.0);
+        Scalar upperBound = hsv(15.0, 100.0, 100.0);
         Core.inRange(mat, lowerBound, upperBound, mat);
 
         //DIVIDE
@@ -68,9 +72,10 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         centerMat = mat.submat(centerROI);
 
         //AVERAGE
-        double leftVal = Math.round(Core.mean(leftMat).val[2] / 255);
-        double rightVal = Math.round(Core.mean(rightMat).val[2] / 255);
-        double centerVal = Math.round(Core.mean(centerMat).val[2] / 255);
+        //OLD: Math.round(Core.mean(rightMat).val[2] / 255);
+        double leftVal = Core.countNonZero(leftMat);
+        double rightVal = Core.countNonZero(rightMat);
+        double centerVal = Core.countNonZero(centerMat);
 
         //COMPARE
         if (leftVal > rightVal && leftVal > centerVal) {
@@ -90,7 +95,9 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         mat.release();
 
         //DRAW RECTS
-        Imgproc.rectangle(input, new Point(100, 100), new Point(300, 300), new Scalar(0, 255, 0), 5);
+        Imgproc.rectangle(input, new Point(100, 200), new Point(350, 600), new Scalar(0, 255, 0), 5);
+        Imgproc.rectangle(input, new Point(1100, 200), new Point(800, 600), new Scalar(255, 0, 0), 5);
+        Imgproc.rectangle(input, new Point(425, 200), new Point(700, 600), new Scalar(0, 0, 255), 5);
 
         telemetry.addData("RESULT", Final_Result);
         telemetry.addData("LEFT", leftVal);
