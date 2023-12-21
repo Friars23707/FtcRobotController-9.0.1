@@ -44,7 +44,9 @@ public class rawCam extends LinearOpMode {
 
         while (opModeIsActive()) {
             // 720p = 1280 x 720
-            telemetry.addData("color", getRedColor(640, 360)); // center of camera for now
+            telemetry.addData("color", getRedColor(5, 5)); // center of camera for now
+            telemetry.addData("bit width", bitmap.getWidth());
+            telemetry.addData("bit height", bitmap.getHeight());
             telemetry.update();
             sleep(1000);
         }
