@@ -1,3 +1,5 @@
+// Android Camera 2 API doesn't work, needs handler but FTC threads wont allow it :(
+
 package org.firstinspires.ftc.teamcode;
 
 import android.Manifest;
