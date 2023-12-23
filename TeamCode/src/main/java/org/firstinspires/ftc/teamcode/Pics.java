@@ -57,6 +57,8 @@ import java.util.Locale;
  * In OnBot Java, use "Add File" to add this OpMode from the list of Samples.
  */
 
+// Used to take pictures for data collection ect...
+
 @TeleOp(name = "Pics", group = "Utility")
 public class Pics extends LinearOpMode
 {
