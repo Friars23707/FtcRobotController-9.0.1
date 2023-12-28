@@ -11,7 +11,7 @@ public class RedNearTest extends LinearOpMode {
         AutonClass ac = new AutonClass(hardwareMap, true);
         waitForStart();
 
-        ac.spikePlace();
+        ac.spikePlace(0);
 
         //Move to board
             ac.rrTurn(-90);

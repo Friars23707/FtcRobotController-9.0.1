@@ -109,6 +109,7 @@ public class AutonClass extends LinearOpMode {
             blueMark = pipe.getFinal_Blue();
             sleep(10);
         }
+        pipe.stop();
     }
 
     public void boardPlace() {
