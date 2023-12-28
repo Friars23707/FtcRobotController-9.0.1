@@ -44,9 +44,13 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void spikePlace() {
+    public void spikePlace(int spikeOveride) {
 
         getSpikeMark();
+        if (spikeOveride != 0) {
+            redMark = spikeOveride;
+            blueMark = spikeOveride;
+        }
 
         TrajectorySequence trajMove1;
         TrajectorySequence trajMove2;
