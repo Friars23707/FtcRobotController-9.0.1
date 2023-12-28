@@ -27,13 +27,13 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
     Mat redMat = new Mat();
     Mat blueMat = new Mat();
 
-    Rect leftROI = new Rect(new Point(100, 200), new Point(350, 600));
+    Rect leftROI = new Rect(new Point(0, 200), new Point(300, 600));
     Mat leftRedMat;
     Mat leftBlueMat;
-    Rect rightROI = new Rect(new Point(1100, 200), new Point(800, 600));
+    Rect rightROI = new Rect(new Point(1280, 200), new Point(900, 600));
     Mat rightRedMat;
     Mat rightBlueMat;
-    Rect centerROI = new Rect(new Point(425, 200), new Point(700, 600));
+    Rect centerROI = new Rect(new Point(450, 200), new Point(780, 600));
     Mat centerRedMat;
     Mat centerBlueMat;
 
@@ -69,11 +69,11 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         Imgproc.cvtColor(input, redMat, Imgproc.COLOR_RGB2HSV);
         Imgproc.cvtColor(input, blueMat, Imgproc.COLOR_RGB2HSV);
 
-        Scalar lowerRedBound = hsv(1.0, 0.0, 0.0);
+        Scalar lowerRedBound = hsv(1.0, 45.0, 0.0);
         Scalar upperRedBound = hsv(15.0, 100.0, 100.0);
         Core.inRange(redMat, lowerRedBound, upperRedBound, redMat);
 
-        Scalar lowerBlueBound = hsv(190.0, 0.0, 0.0);
+        Scalar lowerBlueBound = hsv(180.0, 45.0, 0.0);
         Scalar upperBlueBound = hsv(270.0, 100.0, 100.0);
         Core.inRange(blueMat, lowerBlueBound, upperBlueBound, blueMat);
 
@@ -127,18 +127,18 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         leftBlueMat.release();
         rightBlueMat.release();
         centerBlueMat.release();
-        blueMat.release();
+        //blueMat.release();
 
         //DRAW RECTS
-        Imgproc.rectangle(input, new Point(100, 200), new Point(350, 600), new Scalar(0, 255, 0), 5);
-        Imgproc.rectangle(input, new Point(1100, 200), new Point(800, 600), new Scalar(255, 0, 0), 5);
-        Imgproc.rectangle(input, new Point(425, 200), new Point(700, 600), new Scalar(0, 0, 255), 5);
+        /*Left*/Imgproc.rectangle(input, new Point(0, 200), new Point(300, 600), new Scalar(0, 255, 0), 5);
+        /*Right*/Imgproc.rectangle(input, new Point(1280, 200), new Point(900, 600), new Scalar(255, 0, 0), 10);
+        /*Center*/Imgproc.rectangle(input, new Point(450, 200), new Point(780, 600), new Scalar(0, 0, 255), 20);
 
-        telemetry.addData("RED", Final_Red);
+        /*telemetry.addData("RED", Final_Red);
         telemetry.addData("BLUE", Final_Blue);
-        telemetry.update();
+        telemetry.update();*/
 
-        return input;
+        return blueMat;
     }
 
     public int getFinal_Red() {

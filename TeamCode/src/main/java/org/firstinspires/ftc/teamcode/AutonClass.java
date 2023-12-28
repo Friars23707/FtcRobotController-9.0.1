@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+//import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
@@ -29,9 +29,11 @@ public class AutonClass extends LinearOpMode {
     public Servo gripperLeft = null;
 
     public Servo gripperRight = null;
+    public HardwareMap hwM;
 
     public AutonClass(HardwareMap no, boolean isRed) {
 
+        hwM = no;
         redAlliance = isRed;
         drive = new SampleMecanumDrive(no);
 
@@ -44,12 +46,13 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void spikePlace(int spikeOveride) {
+    public void spikePlace(int spikeOveride) throws InterruptedException {
 
-        getSpikeMark();
         if (spikeOveride != 0) {
             redMark = spikeOveride;
             blueMark = spikeOveride;
+        } else {
+            getSpikeMark();
         }
 
         TrajectorySequence trajMove1;
@@ -59,7 +62,7 @@ public class AutonClass extends LinearOpMode {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(27)
                     .waitSeconds(0.3)
-                    .turn(Math.toRadians(-90))
+                    .turn(Math.toRadians(90))
                     .back(19)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
@@ -102,8 +105,11 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void getSpikeMark() {
-        EOCV_Pipe1 pipe = new EOCV_Pipe1(hardwareMap, telemetry);
+    public void getSpikeMark() throws InterruptedException {
+        while (hwM == null && !isStopRequested()) {
+            wait(1);
+        }
+        EOCV_Pipe1 pipe = new EOCV_Pipe1(hwM, telemetry);
         while ((redMark == 0 || redMark == 4 || blueMark == 0 || blueMark == 4) && !isStopRequested()) {
             redMark = pipe.getFinal_Red();
             blueMark = pipe.getFinal_Blue();
@@ -113,7 +119,7 @@ public class AutonClass extends LinearOpMode {
     }
 
     public void boardPlace() {
-        telemetry.addData("j", "h");
+        //telemetry.addData("j", "h");
     }
 
     public void spikeDrop() {
