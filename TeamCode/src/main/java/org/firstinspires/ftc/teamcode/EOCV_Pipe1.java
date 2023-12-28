@@ -73,9 +73,9 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         Scalar upperRedBound = hsv(15.0, 100.0, 100.0);
         Core.inRange(redMat, lowerRedBound, upperRedBound, redMat);
 
-        Scalar lowerBlueBound = hsv(1.0, 0.0, 0.0);
-        Scalar upperBlueBound = hsv(15.0, 100.0, 100.0);
-        Core.inRange(blueMat, lowerRedBound, upperRedBound, blueMat);
+        Scalar lowerBlueBound = hsv(190.0, 0.0, 0.0);
+        Scalar upperBlueBound = hsv(270.0, 100.0, 100.0);
+        Core.inRange(blueMat, lowerBlueBound, upperBlueBound, blueMat);
 
 
 
