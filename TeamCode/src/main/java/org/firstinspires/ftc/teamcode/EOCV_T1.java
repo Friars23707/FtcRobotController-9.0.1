@@ -17,7 +17,7 @@ public class EOCV_T1 extends LinearOpMode {
             if (isStopRequested()) {
                 break;
             }
-            result = pipe.getFinal_Result();
+            result = pipe.getFinal_Red();
             sleep(100);
         }
         pipe.stop();

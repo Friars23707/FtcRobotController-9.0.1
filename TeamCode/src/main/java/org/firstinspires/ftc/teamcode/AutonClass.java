@@ -20,11 +20,13 @@ public class AutonClass extends LinearOpMode {
 
     public SampleMecanumDrive drive = null;
 
-    public int spikeMark = 0;
+    public int redMark = 0;
+    public int blueMark = 0;
+    public boolean redAlliance;
 
-    //HardwareMap yes;
-    public AutonClass(HardwareMap no) {
+    public AutonClass(HardwareMap no, boolean isRed) {
 
+        redAlliance = isRed;
         drive = new SampleMecanumDrive(no);
 
     }
@@ -46,8 +48,9 @@ public class AutonClass extends LinearOpMode {
 
     public void getSpikeMark() {
         EOCV_Pipe1 pipe = new EOCV_Pipe1(hardwareMap, telemetry);
-        while (spikeMark == 0 || spikeMark == 4 || !isStopRequested()) {
-            spikeMark = pipe.getFinal_Result();
+        while ((redMark == 0 || redMark == 4 || blueMark == 0 || blueMark == 4) && !isStopRequested()) {
+            redMark = pipe.getFinal_Red();
+            blueMark = pipe.getFinal_Blue();
             sleep(10);
         }
     }

@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class RedNearTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        AutonClass ac = new AutonClass(hardwareMap);
+        AutonClass ac = new AutonClass(hardwareMap, true);
         waitForStart();
 
         ac.spikePlace();
