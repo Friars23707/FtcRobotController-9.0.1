@@ -50,6 +50,7 @@ public class AutonClass extends LinearOpMode {
 
         TrajectorySequence trajMove1;
         TrajectorySequence trajMove2;
+        //LEFT SPIKE PLACE
         if ((redAlliance == false && blueMark == 1) || (redAlliance == true && redMark == 1)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(27)
@@ -60,6 +61,31 @@ public class AutonClass extends LinearOpMode {
             trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
                     .waitSeconds(0.1)
                     .build();
+        //CENTER SPIKE PLACE
+        } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
+            trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(45)
+                    .waitSeconds(0.3)
+                    .turn(Math.toRadians(-90))
+                    .build();
+            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(19)
+                    .waitSeconds(0.1)
+                    .strafeRight(8)
+                    .build();
+        //RIGHT SPIKE PLACE
+        } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
+            trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(27)
+                    .waitSeconds(0.3)
+                    .turn(Math.toRadians(-90))
+                    .forward(19)
+                    .build();
+            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(19)
+                    .waitSeconds(0.1)
+                    .build();
+        //FAILSAFE
         } else {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(3).build();
