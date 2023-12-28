@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -24,10 +25,22 @@ public class AutonClass extends LinearOpMode {
     public int blueMark = 0;
     public boolean redAlliance;
 
+
+    public Servo gripperLeft = null;
+
+    public Servo gripperRight = null;
+
     public AutonClass(HardwareMap no, boolean isRed) {
 
         redAlliance = isRed;
         drive = new SampleMecanumDrive(no);
+
+        //Gripper Servos
+        gripperLeft = no.get(Servo.class, "left_gripper"); //Servo-E0
+        gripperRight = no.get(Servo.class, "right_gripper"); //Servo-E1
+
+        gripperLeft.setPosition(0.2);
+        gripperRight.setPosition(0.2);
 
     }
 
@@ -35,15 +48,21 @@ public class AutonClass extends LinearOpMode {
 
         getSpikeMark();
 
-        TrajectorySequence trajMove = drive.trajectorySequenceBuilder(new Pose2d())
-                .back(53)
-                .waitSeconds(0.3)
-                .turn(Math.toRadians(-90))
-                .back(82)
-                .waitSeconds(0.3)
-                .strafeLeft(20)
-                .build();
+        TrajectorySequence trajMove;
+        if ((redAlliance == false && blueMark == 1) || (redAlliance == true && redMark == 1)) {
+            trajMove = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(27)
+                    .waitSeconds(0.3)
+                    .turn(Math.toRadians(-90))
+                    .back(19)
+                    .build();
+        } else {
+            trajMove = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3).build();
+        }
         drive.followTrajectorySequence(trajMove);
+        spikeDrop();
+
     }
 
     public void getSpikeMark() {
@@ -57,6 +76,14 @@ public class AutonClass extends LinearOpMode {
 
     public void boardPlace() {
         telemetry.addData("j", "h");
+    }
+
+    public void spikeDrop() {
+        gripperLeft.setPosition(0.6);
+    }
+
+    public void boardDrop() {
+        gripperRight.setPosition(0.5);
     }
 
     //Basic RR Functions for all classes to use.

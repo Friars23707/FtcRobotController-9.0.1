@@ -237,25 +237,25 @@ public class Main extends LinearOpMode {
                     wristTarget = 1300;
                 }
 
-                if (gamepad2.x) {
+                if (gamepad2.x) { //CLOSE
                     leftGripperPos -= 0.05;
                 } else if (gamepad2.a) {
                     leftGripperPos += 0.05;
                 }
                 if (leftGripperPos > 0.6) {
-                    leftGripperPos = 0.3;
-                } else if (leftGripperPos < 0.25) {
+                    leftGripperPos = 0.6;
+                } else if (leftGripperPos < 0.2) {
                     leftGripperPos = 0.2;
                 }
                 gripperLeft.setPosition(leftGripperPos);
 
-                if (gamepad2.y) {
+                if (gamepad2.y) { //CLOSE
                     rightGripperPos += 0.05;
                 } else if (gamepad2.b) {
                     rightGripperPos -= 0.05;
                 }
                 if (rightGripperPos > 0.5) {
-                    rightGripperPos = 0.3;
+                    rightGripperPos = 0.5;
                 } else if (rightGripperPos < 0.2) {
                     rightGripperPos = 0.2;
                 }
