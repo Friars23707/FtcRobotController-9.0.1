@@ -48,20 +48,27 @@ public class AutonClass extends LinearOpMode {
 
         getSpikeMark();
 
-        TrajectorySequence trajMove;
+        TrajectorySequence trajMove1;
+        TrajectorySequence trajMove2;
         if ((redAlliance == false && blueMark == 1) || (redAlliance == true && redMark == 1)) {
-            trajMove = drive.trajectorySequenceBuilder(new Pose2d())
+            trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(27)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(-90))
                     .back(19)
                     .build();
+            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .waitSeconds(0.1)
+                    .build();
         } else {
-            trajMove = drive.trajectorySequenceBuilder(new Pose2d())
+            trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3).build();
+            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(3).build();
         }
-        drive.followTrajectorySequence(trajMove);
+        drive.followTrajectorySequence(trajMove1);
         spikeDrop();
+        drive.followTrajectorySequence(trajMove2);
 
     }
 
