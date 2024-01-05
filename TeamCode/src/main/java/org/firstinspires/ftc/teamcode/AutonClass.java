@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -27,7 +28,9 @@ public class AutonClass extends LinearOpMode {
     public boolean redAlliance;
     public boolean isFar;
 
-
+    private DcMotor leftArm = null;
+    private DcMotor rightArm = null;
+    private DcMotor wristMotor = null;
     public Servo gripperLeft = null;
 
     public Servo gripperRight = null;
@@ -45,6 +48,18 @@ public class AutonClass extends LinearOpMode {
         redAlliance = isRed;
         isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
+
+        //Arm Motors
+        leftArm = hardwareMap.get(DcMotor.class, "arm_motor_left"); // E0
+        rightArm = hardwareMap.get(DcMotor.class, "arm_motor_right"); // E1
+        wristMotor = hardwareMap.get(DcMotor.class, "wrist_motor"); // E3
+
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        leftArm.setDirection(DcMotor.Direction.REVERSE);
+        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Gripper Servos
         gripperLeft = no.get(Servo.class, "left_gripper"); //Servo-E0
@@ -234,14 +249,27 @@ public class AutonClass extends LinearOpMode {
         gripperLeft.setPosition(0.6);
     }
 
-    public void boardDrop() {
+    public void boardDrop() throws InterruptedException {
+        leftArm.setTargetPosition(2800);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setTargetPosition(2800);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setTargetPosition(1300);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wait(3000);
         gripperRight.setPosition(0.5);
+        wait(1000);
+        leftArm.setTargetPosition(0);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setTargetPosition(0);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setTargetPosition(0);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void runOpMode() throws InterruptedException {
         /*This just needs to exist so
         that we can use linearOpMode vars*/
-
     }
 }
 
