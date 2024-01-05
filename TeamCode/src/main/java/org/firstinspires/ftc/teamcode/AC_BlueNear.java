@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 public class AC_BlueNear extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
-        AutonClass ac = new AutonClass(hardwareMap, false, false);
+        AutonClass ac = new AutonClass(hardwareMap, telemetry, false, false);
         waitForStart();
 
         ac.runProgram(0);

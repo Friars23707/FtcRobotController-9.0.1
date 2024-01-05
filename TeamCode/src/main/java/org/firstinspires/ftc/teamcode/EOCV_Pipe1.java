@@ -123,7 +123,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         leftRedMat.release();
         rightRedMat.release();
         centerRedMat.release();
-        redMat.release();
+        //redMat.release();
         leftBlueMat.release();
         rightBlueMat.release();
         centerBlueMat.release();
@@ -138,7 +138,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         telemetry.addData("BLUE", Final_Blue);
         telemetry.update();*/
 
-        return blueMat;
+        return redMat;
     }
 
     public int getFinal_Red() {

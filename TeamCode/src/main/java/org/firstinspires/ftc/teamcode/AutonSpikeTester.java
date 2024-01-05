@@ -57,7 +57,7 @@ public class AutonSpikeTester extends LinearOpMode {
 
             boolean isBoolRed = ISRED == 1 ? true : false;
             boolean isBoolFar = ISFAR == 1 ? false : true;
-            AutonClass ac = new AutonClass(hardwareMap, isBoolRed, isBoolFar);
+            AutonClass ac = new AutonClass(hardwareMap, telemetry, isBoolRed, isBoolFar);
             ac.runProgram(SPIKE);
 
         }

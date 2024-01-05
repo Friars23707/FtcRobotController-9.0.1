@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.opencv.core.Mat;
@@ -35,6 +36,7 @@ public class AutonClass extends LinearOpMode {
 
     public Servo gripperRight = null;
     public HardwareMap hwM;
+    public Telemetry telem;
 
 
     TrajectorySequence trajMove1; //Move to drop pixel on spike mark
@@ -42,17 +44,18 @@ public class AutonClass extends LinearOpMode {
     TrajectorySequence trajMove3; //Move in front of backboard.
     TrajectorySequence trajMove4; //Move to correct board spot
     TrajectorySequence trajMove5; //Move out of the way
-    public AutonClass(HardwareMap no, boolean isRed, boolean s_isFar) {
+    public AutonClass(HardwareMap no, Telemetry tm, boolean isRed, boolean s_isFar) {
 
         hwM = no;
+        telem = tm;
         redAlliance = isRed;
         isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
 
         //Arm Motors
-        leftArm = hardwareMap.get(DcMotor.class, "arm_motor_left"); // E0
-        rightArm = hardwareMap.get(DcMotor.class, "arm_motor_right"); // E1
-        wristMotor = hardwareMap.get(DcMotor.class, "wrist_motor"); // E3
+        leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
+        rightArm = hwM.get(DcMotor.class, "arm_motor_right"); // E1
+        wristMotor = hwM.get(DcMotor.class, "wrist_motor"); // E3
 
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -62,11 +65,11 @@ public class AutonClass extends LinearOpMode {
         wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Gripper Servos
-        gripperLeft = no.get(Servo.class, "left_gripper"); //Servo-E0
-        gripperRight = no.get(Servo.class, "right_gripper"); //Servo-E1
+        gripperLeft = hwM.get(Servo.class, "left_gripper"); //Servo-E0
+        gripperRight = hwM.get(Servo.class, "right_gripper"); //Servo-E1
 
         gripperLeft.setPosition(0.2);
-        gripperRight.setPosition(0.2);
+        gripperRight.setPosition(0.5);
 
     }
 
@@ -79,6 +82,9 @@ public class AutonClass extends LinearOpMode {
             getSpikeMark();
         }
 
+        telem.addData("spikes", redMark+":"+blueMark);
+        telem.update();
+
         /*
          * Create Traj 1+2, which places purple on floor and moves out of the way.
          */
@@ -88,7 +94,7 @@ public class AutonClass extends LinearOpMode {
                     .back(30)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(90))
-                    .back(10)
+                    .forward(10)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                     .forward(10)
@@ -109,7 +115,7 @@ public class AutonClass extends LinearOpMode {
                     .back(30)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(-90))
-                    .back(10)
+                    .forward(10)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                     .forward(10)
@@ -256,9 +262,9 @@ public class AutonClass extends LinearOpMode {
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setTargetPosition(1300);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        wait(3000);
-        gripperRight.setPosition(0.5);
-        wait(1000);
+        Thread.sleep(3000);
+        gripperRight.setPosition(0.2);
+        Thread.sleep(1000);
         leftArm.setTargetPosition(0);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightArm.setTargetPosition(0);
