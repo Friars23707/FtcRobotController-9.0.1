@@ -10,10 +10,12 @@ public class AutonSpikeTester extends LinearOpMode {
         waitForStart();
         int ISRED = 0;
         int SPIKE = 0;
+        int ISFAR = 0;
 
         while (opModeIsActive()) {
             ISRED = 0;
             SPIKE = 0;
+            ISFAR = 0;
             telemetry.addData("Which spike mark do you want to go to?","");
             telemetry.addData("Left", "X");
             telemetry.addData("Center", "Y");
@@ -41,9 +43,22 @@ public class AutonSpikeTester extends LinearOpMode {
                 }
             }
 
+            telemetry.addData("Where are you?","");
+            telemetry.addData("Near", "Up D-Pad");
+            telemetry.addData("Far", "Down D-Pad");
+            telemetry.update();
+            while (ISFAR == 0) {
+                if (gamepad1.dpad_up) {
+                    ISFAR = 1;
+                } else if (gamepad1.dpad_down) {
+                    ISFAR = 2;
+                }
+            }
+
             boolean isBoolRed = ISRED == 1 ? true : false;
-            AutonClass ac = new AutonClass(hardwareMap, isBoolRed);
-            ac.spikePlace(SPIKE);
+            boolean isBoolFar = ISFAR == 1 ? false : true;
+            AutonClass ac = new AutonClass(hardwareMap, isBoolRed, isBoolFar);
+            ac.runProgram(SPIKE);
 
         }
 

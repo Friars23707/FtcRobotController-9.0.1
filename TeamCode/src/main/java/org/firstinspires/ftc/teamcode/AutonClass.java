@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.opencv.core.Mat;
 
 
 public class AutonClass extends LinearOpMode {
@@ -24,6 +25,7 @@ public class AutonClass extends LinearOpMode {
     public int redMark = 0;
     public int blueMark = 0;
     public boolean redAlliance;
+    public boolean isFar;
 
 
     public Servo gripperLeft = null;
@@ -31,10 +33,17 @@ public class AutonClass extends LinearOpMode {
     public Servo gripperRight = null;
     public HardwareMap hwM;
 
-    public AutonClass(HardwareMap no, boolean isRed) {
+
+    TrajectorySequence trajMove1; //Move to drop pixel on spike mark
+    TrajectorySequence trajMove2; //Move to center lane of tiles
+    TrajectorySequence trajMove3; //Move in front of backboard.
+    TrajectorySequence trajMove4; //Move to correct board spot
+    TrajectorySequence trajMove5; //Move out of the way
+    public AutonClass(HardwareMap no, boolean isRed, boolean s_isFar) {
 
         hwM = no;
         redAlliance = isRed;
+        isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
 
         //Gripper Servos
@@ -46,7 +55,7 @@ public class AutonClass extends LinearOpMode {
 
     }
 
-    public void spikePlace(int spikeOveride) throws InterruptedException {
+    public void runProgram(int spikeOveride) throws InterruptedException {
 
         if (spikeOveride != 0) {
             redMark = spikeOveride;
@@ -55,53 +64,156 @@ public class AutonClass extends LinearOpMode {
             getSpikeMark();
         }
 
-        TrajectorySequence trajMove1;
-        TrajectorySequence trajMove2;
+        /*
+         * Create Traj 1+2, which places purple on floor and moves out of the way.
+         */
         //LEFT SPIKE PLACE
         if ((redAlliance == false && blueMark == 1) || (redAlliance == true && redMark == 1)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(27)
+                    .back(30)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(90))
-                    .back(19)
+                    .back(10)
                     .build();
-            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .waitSeconds(0.1)
+            trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
+                    .forward(10)
+                    .turn(Math.toRadians(-90))
+                    .back(20)
                     .build();
         //CENTER SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(45)
-                    .waitSeconds(0.3)
-                    .turn(Math.toRadians(-90))
+                    .back(46)
                     .build();
-            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(19)
-                    .waitSeconds(0.1)
-                    .strafeRight(8)
+            trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
+                    .back(4)
                     .build();
         //RIGHT SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(27)
+                    .back(30)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(-90))
-                    .forward(19)
+                    .back(10)
                     .build();
-            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(19)
-                    .waitSeconds(0.1)
+            trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
+                    .forward(10)
+                    .turn(Math.toRadians(90))
+                    .back(20)
                     .build();
         //FAILSAFE
         } else {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(3).build();
-            trajMove2 = drive.trajectorySequenceBuilder(new Pose2d())
+            trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                     .back(3).build();
         }
+
+        /*
+         * Create Traj 3, which moves to the middle tiles in front of the board.
+         */
+        //RED NEAR
+        if (!isFar && redAlliance) {
+            trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
+                    .turn(Math.toRadians(-90))
+                    .back(26)
+                    .build();
+        //RED FAR
+        } else if (isFar && redAlliance) {
+            trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
+                    .turn(Math.toRadians(-90))
+                    .back(26+48)
+                    .build();
+        //BLUE NEAR
+        } else if (!isFar && !redAlliance) {
+            trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
+                    .turn(Math.toRadians(90))
+                    .back(26)
+                    .build();
+        //BLUE FAR
+        } else if (isFar && !redAlliance) {
+            trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
+                    .turn(Math.toRadians(90))
+                    .back(26+48)
+                    .build();
+        }
+
+        /*
+         * Create Traj 4+5, first 4 moves into the correct backboard spot, then 5 moves away
+         */
+        if (redAlliance) {
+            if (redMark == 1) {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeLeft(20)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeRight(20)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            } else if (redMark == 2) {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeLeft(24)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeRight(24)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            } else {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeLeft(28)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeRight(28)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            }
+        } else {
+            if (redMark == 1) {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeRight(20)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeLeft(20)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            } else if (redMark == 2) {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeRight(24)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeLeft(24)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            } else {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeRight(28)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeLeft(28)
+                        .waitSeconds(0.1)
+                        .back(24)
+                        .build();
+            }
+        }
+
+
+        /*
+         * Run all of the actual trajectories.
+         */
         drive.followTrajectorySequence(trajMove1);
         spikeDrop();
         drive.followTrajectorySequence(trajMove2);
+        drive.followTrajectorySequence(trajMove3);
+        drive.followTrajectorySequence(trajMove4);
+        boardDrop();
+        drive.followTrajectorySequence(trajMove5);
+
+
 
     }
 
@@ -118,48 +230,12 @@ public class AutonClass extends LinearOpMode {
         pipe.stop();
     }
 
-    public void boardPlace() {
-        //telemetry.addData("j", "h");
-    }
-
     public void spikeDrop() {
         gripperLeft.setPosition(0.6);
     }
 
     public void boardDrop() {
         gripperRight.setPosition(0.5);
-    }
-
-    //Basic RR Functions for all classes to use.
-    public void rrFoward(int inches) {
-        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .forward(inches)
-                .build();
-        drive.followTrajectorySequence(simpleTraj);
-    }
-    public void rrBack(int inches) {
-        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .back(inches)
-                .build();
-        drive.followTrajectorySequence(simpleTraj);
-    }
-    public void rrStrafeLeft(int inches) {
-        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .strafeLeft(inches)
-                .build();
-        drive.followTrajectorySequence(simpleTraj);
-    }
-    public void rrStrafeRight(int inches) {
-        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .strafeRight(inches)
-                .build();
-        drive.followTrajectorySequence(simpleTraj);
-    }
-    public void rrTurn(int degrees) {
-        TrajectorySequence simpleTraj = drive.trajectorySequenceBuilder(new Pose2d())
-                .turn(Math.toRadians(degrees))
-                .build();
-        drive.followTrajectorySequence(simpleTraj);
     }
 
     public void runOpMode() throws InterruptedException {
