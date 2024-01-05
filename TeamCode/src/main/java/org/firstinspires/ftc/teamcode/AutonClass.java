@@ -104,10 +104,10 @@ public class AutonClass extends LinearOpMode {
         //CENTER SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(46)
+                    .back(43)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                    .back(4)
+                    .back(7)
                     .build();
         //RIGHT SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
@@ -137,7 +137,7 @@ public class AutonClass extends LinearOpMode {
         if (!isFar && redAlliance) {
             trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
                     .turn(Math.toRadians(-90))
-                    .back(26)
+                    .back(32)
                     .build();
         //RED FAR
         } else if (isFar && redAlliance) {
@@ -165,19 +165,19 @@ public class AutonClass extends LinearOpMode {
         if (redAlliance) {
             if (redMark == 1) {
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
-                        .strafeLeft(20)
-                        .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeRight(20)
-                        .waitSeconds(0.1)
-                        .back(24)
-                        .build();
-            } else if (redMark == 2) {
-                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
-                        .strafeLeft(24)
+                        .strafeLeft(30)
                         .build();
                 trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
                         .strafeRight(24)
+                        .waitSeconds(0.1)
+                        .back(21)
+                        .build();
+            } else if (redMark == 2) {
+                trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .strafeLeft(40)
+                        .build();
+                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                        .strafeRight(40)
                         .waitSeconds(0.1)
                         .back(24)
                         .build();
@@ -251,11 +251,16 @@ public class AutonClass extends LinearOpMode {
         pipe.stop();
     }
 
-    public void spikeDrop() {
+    public void spikeDrop() throws InterruptedException {
         gripperLeft.setPosition(0.6);
+        Thread.sleep(2000);
     }
 
     public void boardDrop() throws InterruptedException {
+        leftArm.setPower(0.5);
+        rightArm.setPower(0.5);
+        wristMotor.setPower(0.5);
+
         leftArm.setTargetPosition(2800);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightArm.setTargetPosition(2800);
