@@ -51,6 +51,7 @@ public class AutonClass extends LinearOpMode {
         redAlliance = isRed;
         isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
+        drive.setPoseEstimate(new Pose2d());
 
         //Arm Motors
         leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
@@ -68,8 +69,8 @@ public class AutonClass extends LinearOpMode {
         gripperLeft = hwM.get(Servo.class, "left_gripper"); //Servo-E0
         gripperRight = hwM.get(Servo.class, "right_gripper"); //Servo-E1
 
-        gripperLeft.setPosition(0.2);
-        gripperRight.setPosition(0.5);
+        gripperLeft.setPosition(0.39);
+        gripperRight.setPosition(0.4);
 
     }
 
@@ -91,23 +92,23 @@ public class AutonClass extends LinearOpMode {
         //LEFT SPIKE PLACE
         if ((redAlliance == false && blueMark == 1) || (redAlliance == true && redMark == 1)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(30)
-                    .waitSeconds(0.3)
-                    .turn(Math.toRadians(90))
-                    .forward(10)
+                    .back(25)
+                    .waitSeconds(0.1)
+                    .turn(Math.toRadians(-90))
+                    .forward(5)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                    .forward(10)
-                    .turn(Math.toRadians(-90))
-                    .back(20)
+                    .back(5)
+                    .waitSeconds(0.1)
+                    .strafeLeft(10)
                     .build();
         //CENTER SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(43)
+                    .back(40)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                    .back(7)
+                    .back(8)
                     .build();
         //RIGHT SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
@@ -252,7 +253,7 @@ public class AutonClass extends LinearOpMode {
     }
 
     public void spikeDrop() throws InterruptedException {
-        gripperLeft.setPosition(0.6);
+        gripperLeft.setPosition(0.45);
         Thread.sleep(2000);
     }
 
@@ -268,7 +269,7 @@ public class AutonClass extends LinearOpMode {
         wristMotor.setTargetPosition(1300);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         Thread.sleep(3000);
-        gripperRight.setPosition(0.2);
+        gripperRight.setPosition(0.3);
         Thread.sleep(1000);
         leftArm.setTargetPosition(0);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);

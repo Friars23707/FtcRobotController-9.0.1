@@ -243,27 +243,27 @@ public class Main extends LinearOpMode {
                 }
 
                 if (gamepad2.x) { //CLOSE
-                    leftGripperPos -= 0.05;
+                    leftGripperPos = 0.39;
                 } else if (gamepad2.a) {
-                    leftGripperPos += 0.05;
+                    leftGripperPos = 0.45;
                 }
-                if (leftGripperPos > 0.6) {
+                /*if (leftGripperPos > 0.6) {
                     leftGripperPos = 0.6;
                 } else if (leftGripperPos < 0.2) {
                     leftGripperPos = 0.2;
-                }
+                }*/
                 gripperLeft.setPosition(leftGripperPos);
 
                 if (gamepad2.y) { //CLOSE
-                    rightGripperPos += 0.05;
+                    rightGripperPos = 0.4;
                 } else if (gamepad2.b) {
-                    rightGripperPos -= 0.05;
+                    rightGripperPos = 0.3;
                 }
-                if (rightGripperPos > 0.5) {
+                /*if (rightGripperPos > 0.5) {
                     rightGripperPos = 0.5;
                 } else if (rightGripperPos < 0.2) {
                     rightGripperPos = 0.2;
-                }
+                }*/
                 gripperRight.setPosition(rightGripperPos);
 
             //MODE 1: MANUAL / ZERO-ING MODE
