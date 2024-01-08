@@ -138,7 +138,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         telemetry.addData("BLUE", Final_Blue);
         telemetry.update();*/
 
-        return redMat;
+        return blueMat;
     }
 
     public int getFinal_Red() {
