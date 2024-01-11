@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.profile.VelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -105,12 +106,12 @@ public class AutonClass extends LinearOpMode {
         //CENTER SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(40)
+                    .back(65)
+                    .waitSeconds(2)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                    .back(8)
+                    .back(15)
                     .build();
-        //RIGHT SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(30)
