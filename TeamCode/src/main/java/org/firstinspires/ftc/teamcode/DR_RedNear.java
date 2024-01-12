@@ -135,9 +135,9 @@ public class DR_RedNear extends LinearOpMode {
     }
 
     public void move(int ax, int lat, int ya) {
-        axial = (ax == 1) ? -0.2 : 0;
-        lateral = (lat == 1) ? -0.2 : 0;
-        yaw = (ya == 1) ? -0.2 : 0;
+        axial = ax;
+        lateral = lat;
+        yaw = ya;
     }
 
 }
