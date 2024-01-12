@@ -1,14 +1,17 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@TeleOp(group = "DR")
+@Autonomous(group = "DR")
 public class DR_RedNear extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,6 +25,8 @@ public class DR_RedNear extends LinearOpMode {
     private Servo gripperLeft = null;
     private Servo gripperRight = null;
     private Servo shooter = null;
+    private Encoder leftEncoder = null;
+    private Encoder frontEncoder = null;
 
     double axial = 0;  // Note: pushing stick forward gives negative value
     double lateral = 0;
@@ -33,6 +38,7 @@ public class DR_RedNear extends LinearOpMode {
     double rightGripperTar = 0.4;
 
     int spikeMark = 0;
+    int step = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -66,6 +72,10 @@ public class DR_RedNear extends LinearOpMode {
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         wristMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "left_back_drive"));
+        leftEncoder.setDirection(Encoder.Direction.REVERSE);
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
+
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -80,20 +90,100 @@ public class DR_RedNear extends LinearOpMode {
         
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            telemetry.addData("Time:", runtime.seconds());
+            telemetry.addData("Left Ticks", leftEncoder.getCurrentPosition());
+            telemetry.addData("Front Ticks", frontEncoder.getCurrentPosition());
+            telemetry.addData("Step", step);
+            telemetry.update();
+            //1000 encoder ticks is 4 inches
 
-            if (runtime.milliseconds() < 4) {
-                move(1, 0, 0);
-            } else if (runtime.seconds() < 8) {
-                if (spikeMark == 1)  {
-                    move(0,0, 1);
-                } else if (spikeMark == 2)  {
-                    move(0,0, 1);
-                } else if (spikeMark == 3)  {
-                    move(0,0, 1);
+            if (spikeMark == 1) {
+
+                if (step == 0) {
+                    move(-0.3, 0,0 );
+                } else if (step == 1) {
+                    move(0,0,0.2);
+                } else if (step == 2) {
+                    move(0.3,0,0);
+                } else {
+                    move(0,0,0);
                 }
-            } else {
-                move(0,0,0);
+
+            } else if (spikeMark == 2) {
+
+                if (step == 0) {
+                    move(-0.3, 0,0 );
+                } else {
+                    move(0,0,0);
+                }
+
+            } else if (spikeMark == 3) {
+
+                if (step == 0) {
+                    move(-0.3, 0,0 );
+                } else if (step == 1) {
+                    move(0,0,-0.2);
+                } else if (step == 2) {
+                    move(0.3,0,0);
+                } else {
+                    move(0,0,0);
+                }
+
             }
+
+            class MyBackgroudMethod extends Thread {
+
+                @Override
+                public void run() {
+                    while (opModeIsActive()) {
+
+                        if (spikeMark == 1) {
+
+                            if (step == 0) {
+                                if (leftEncoder.getCurrentPosition() > 7100) {
+                                    step = 1;
+                                }
+                            } else if (step == 1) {
+                                if (frontEncoder.getCurrentPosition() > 3100) {
+                                    step = 2;
+                                }
+                            } else if (step == 2) {
+                                if (leftEncoder.getCurrentPosition() < 4800) {
+                                    step = 3;
+                                }
+                            }
+
+                        } else if (spikeMark == 2) {
+
+                            if (leftEncoder.getCurrentPosition() > 12000) {
+                                step = 1;
+                            }
+
+                        } else if (spikeMark == 3) {
+
+                            if (step == 0) {
+                                if (leftEncoder.getCurrentPosition() > 7100) {
+                                    step = 1;
+                                }
+                            } else if (step == 1) {
+                                if (frontEncoder.getCurrentPosition() < -3100) {
+                                    step = 2;
+                                }
+                            } else if (step == 2) {
+                                if (leftEncoder.getCurrentPosition() < 4800) {
+                                    step = 3;
+                                }
+                            }
+
+                        }
+
+                    }
+                }
+
+            }
+            MyBackgroudMethod thread = new MyBackgroudMethod();
+            thread.setDaemon(true);
+            thread.start();
 
             double leftFrontPower  = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
@@ -134,10 +224,24 @@ public class DR_RedNear extends LinearOpMode {
         pipe.stop();
     }
 
-    public void move(int ax, int lat, int ya) {
+    public void move(double ax, double lat, double ya) {
         axial = ax;
         lateral = lat;
         yaw = ya;
+    }
+
+    double wheelCircum = 1.69291339*Math.PI;
+    public void inchesForward(double inches) throws InterruptedException {
+        double currentTicks = leftEncoder.getCurrentPosition();
+        double inchesToTicks = wheelCircum*inches*2000;
+        move(-0.1,0,0);
+        while (leftEncoder.getCurrentPosition()-currentTicks < inchesToTicks) {
+
+            Thread.sleep(1);
+
+        }
+        move(0,0,0);
+        step++;
     }
 
 }
