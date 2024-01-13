@@ -2,17 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
 @Autonomous(group = "DR")
-public class DR_RedNear extends LinearOpMode {
+public class DR_Blue extends LinearOpMode {
 
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor leftFrontDrive = null;
@@ -114,10 +112,19 @@ public class DR_RedNear extends LinearOpMode {
 
                 if (step == 0) {
                     move(-0.3, 0,0 );
+                    if (leftTicks > inchesToTicks(35)) {
+                        step = 1;
+                    }
                 } else if (step == 1) {
                     move(0,0,0.2);
+                    if (frontTicks > 3100) {
+                        step = 2;
+                    }
                 } else if (step == 2) {
                     move(0.3,0,0);
+                    if (leftTicks < 5500) {
+                        step = 4;
+                    }
                 } else {
                     move(0,0,0);
                 }
@@ -126,71 +133,33 @@ public class DR_RedNear extends LinearOpMode {
 
                 if (step == 0) {
                     move(-0.3, 0,0 );
+                    if (leftTicks > inchesToTicks(46)) {
+                        step = 4;
+                    }
                 } else {
                     move(0,0,0);
                 }
 
             } else if (spikeMark == 3) {
-
                 if (step == 0) {
-                    move(0, -0.3, 0);
-                } else if (step == 1) {
                     move(-0.3, 0, 0);
+                    if (leftTicks > inchesToTicks(36)) {
+                        step = 1;
+                    }
+                } else if (step == 1) {
+                    move(0, 0, -0.2);
+                    if (frontTicks < -3100) {
+                        step = 2;
+                    }
+                } else if (step == 2) {
+                    move(0.3, 0, 0);
+                    if (leftTicks > 8000) {
+                        step = 4;
+                    }
                 } else {
                     move(0, 0, 0);
                 }
-
             }
-
-            class MyBackgroudMethod extends Thread {
-
-                @Override
-                public void run() {
-                    while (opModeIsActive()) {
-
-                        if (spikeMark == 1) {
-
-                            if (step == 0) {
-                                if (leftTicks > 7300) {
-                                    step = 1;
-                                }
-                            } else if (step == 1) {
-                                if (frontTicks > 3100) {
-                                    step = 2;
-                                }
-                            } else if (step == 2) {
-                                if (leftTicks < 5000) {
-                                    step = 4;
-                                }
-                            }
-
-                        } else if (spikeMark == 2) {
-
-                            if (leftTicks > inchesToTicks(39)) {
-                                step = 4;
-                            }
-
-                        } else if (spikeMark == 3) {
-
-                            if (step == 0) {
-                                if (frontTicks > inchesToTicks(13)) {
-                                    step = 1;
-                                }
-                            } else if (step == 1) {
-                                if (leftTicks > inchesToTicks(33)) {
-                                    step = 4;
-                                }
-                            }
-
-                        }
-
-                    }
-                }
-
-            }
-            MyBackgroudMethod thread = new MyBackgroudMethod();
-            thread.setDaemon(true);
-            thread.start();
 
             double leftFrontPower  = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
@@ -227,7 +196,7 @@ public class DR_RedNear extends LinearOpMode {
     }
 
     public double inchesToTicks(double inches) {
-        return inches*333;
+        return inches*307;
     }
 
     public void getSpikeMark() throws InterruptedException {
@@ -236,7 +205,7 @@ public class DR_RedNear extends LinearOpMode {
         }
         EOCV_Pipe1 pipe = new EOCV_Pipe1(hardwareMap, telemetry);
         while ((spikeMark == 0 || spikeMark == 4) && !isStopRequested()) {
-            spikeMark = pipe.getFinal_Red(); //GET THE SPIKE MARK
+            spikeMark = pipe.getFinal_Blue(); //GET THE SPIKE MARK
             sleep(10);
         }
         pipe.stop();
