@@ -122,7 +122,7 @@ public class DR_Blue extends LinearOpMode {
                     }
                 } else if (step == 2) {
                     move(0.3,0,0);
-                    if (leftTicks < 5500) {
+                    if (leftTicks < 6000) {
                         step = 4;
                     }
                 } else {
@@ -153,7 +153,7 @@ public class DR_Blue extends LinearOpMode {
                     }
                 } else if (step == 2) {
                     move(0.3, 0, 0);
-                    if (leftTicks > 8000) {
+                    if (leftTicks > 9000) {
                         step = 4;
                     }
                 } else {
