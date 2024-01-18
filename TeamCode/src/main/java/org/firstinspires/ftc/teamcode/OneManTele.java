@@ -1,33 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.vision.VisionPortal;
-import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-
-import java.util.List;
 
 
-@TeleOp(name="Main", group=".Primary")
+@TeleOp(name="OneManTele", group=".Primary")
 
 
-public class Main extends LinearOpMode {
+public class OneManTele extends LinearOpMode {
 
-    int armPos = 0;
     int gp2Mode = 0;
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-    private TfodProcessor tfod;
-
-    private VisionPortal visionPortal;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -51,14 +37,6 @@ public class Main extends LinearOpMode {
         int wristTarget = 0;
         int reverseConst = 1;
 
-        initTfod();
-
-        // Wait for the DS start button to be touched.
-        telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
-        telemetry.update();
-        waitForStart();
-
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
         leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive"); //0
@@ -81,29 +59,17 @@ public class Main extends LinearOpMode {
         rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         leftFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // ########################################################################################
-        // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
-        //        // ########################################################################################
-        //        // Most robots need the motors on one side to be reversed to drive forward.
-        // The motor reversals shown here are for a "direct drive" robot (the wheels turn the same direction as the motor shaft)
-        // If your robot has additional gear reductions or uses a right-angled drive, it's important to ensure
-        // that your motors are turning in the correct direction.  So, start out with the reversals here, BUT
-        // when you first test your robot, push the left joystick forward and observe the direction the wheels turn.
-        // Reverse the direction (flip FORWARD <-> REVERSE ) of any wheel that runs backward
-        // Keep testing until ALL the wheels move the robot forward when you push the left joystick forward.
         leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
         leftArm.setDirection(DcMotor.Direction.REVERSE);
         rightArm.setDirection(DcMotor.Direction.FORWARD);
         wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -117,22 +83,8 @@ public class Main extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            telemetryTfod();
 
             //GAMEPAD 1 CONTROLS
-
-            if (gamepad1.dpad_down) {
-                visionPortal.stopStreaming();
-            } else if (gamepad1.dpad_up) {
-                visionPortal.resumeStreaming();
-            }
-
-            //Reverse Drive
-            if (gamepad1.dpad_left) {
-                reverseConst = 1;
-            } else if (gamepad1.dpad_right) {
-                reverseConst = -1;
-            }
 
             double max;
 
@@ -161,55 +113,10 @@ public class Main extends LinearOpMode {
                 rightBackPower /= max;
             }
 
-            // This is test code:
-            //
-            // Uncomment the following code to test your motor directions.
-            // Each button should make the corresponding motor run FORWARD.
-            //   1) First get all the motors to take to correct positions on the robot
-            //      by adjusting your Robot Configuration if necessary.
-            //   2) Then make sure they run in the correct direction by modifying the
-            //      the setDirection() calls above.
-            // Once the correct motors move in the correct direction re-comment this code.
-
-            /*
-            leftFrontPower  = gamepad1.x ? 1.0 : 0.0;  // X gamepad
-            leftBackPower   = gamepad1.a ? 1.0 : 0.0;  // A gamepad
-            rightFrontPower = gamepad1.y ? 1.0 : 0.0;  // Y gamepad
-            rightBackPower  = gamepad1.b ? 1.0 : 0.0;  // B gamepad
-            */
-
-            // Send calculated power to wheels
-            //The reverse constant is normally 1, retaining your original values
-            //If you press dpad left it negates it which swaps all motor valus.
             leftFrontDrive.setPower(leftFrontPower*reverseConst);
             rightFrontDrive.setPower(rightFrontPower*reverseConst);
             leftBackDrive.setPower(leftBackPower*reverseConst);
             rightBackDrive.setPower(rightBackPower*reverseConst);
-
-            /*Logans attempt at arm code
-            Notes as of 11/3/23: arm works up and down, more power needed to reset
-            11/4/23: updated & optimised code
-            11/27/23: code left behind in favor of encoders
-
-            int up = gamepad2.left_bumper ? 1 : 0;
-            int down = gamepad2.right_bumper ? 1 : 0;
-            float armPower = up - down;
-            armPower /= 2;
-
-            leftArm.setPower(armPower);
-            rightArm.setPower(armPower);
-
-            // Wrist Code
-            float wristPower = gamepad2.left_trigger - gamepad2.right_trigger;
-            wristMotor.setPower(wristPower);
-            */
-
-            /*
-            Encoder based arm + wrist code
-            0 = intake
-            250 = home
-            2,300 = score
-            */
 
             /*GAMEPAD 2 CONTROLS
 
@@ -219,60 +126,50 @@ public class Main extends LinearOpMode {
              */
 
             //MODE SWAP
-            if (gamepad2.back) {
+            if (gamepad1.back) {
                 gp2Mode = 0;
-            } else if (gamepad2.options) {
+            } else if (gamepad1.options) {
                 gp2Mode = 1;
             }
 
             //MODE 0: ENCODER / MAIN MODE
             if (gp2Mode == 0) {
 
-                if (gamepad2.dpad_down) { //INTAKE
+                if (gamepad1.dpad_down) { //INTAKE
                     armTarget = 0;
                     wristTarget = 0;
-                } else if (gamepad2.dpad_left) { //HOME
+                } else if (gamepad1.dpad_left) { //HOME
                     armTarget = 250;
                     wristTarget = 0;
-                } else if (gamepad2.dpad_up) { //SCORE
+                } else if (gamepad1.dpad_up) { //SCORE
                     armTarget = 2450;
                     wristTarget = 1700;
-                } else if (gamepad2.dpad_right) { //SCORE-LOW
+                } else if (gamepad1.dpad_right) { //SCORE-LOW
                     armTarget = 2800;
                     wristTarget = 1300;
                 }
 
-                if (gamepad2.x) { //CLOSE
+                if (gamepad1.x) { //CLOSE
                     leftGripperPos = 0.39;
-                } else if (gamepad2.a) {
+                } else if (gamepad1.a) {
                     leftGripperPos = 0.45;
                 }
-                /*if (leftGripperPos > 0.6) {
-                    leftGripperPos = 0.6;
-                } else if (leftGripperPos < 0.2) {
-                    leftGripperPos = 0.2;
-                }*/
                 gripperLeft.setPosition(leftGripperPos);
 
-                if (gamepad2.y) { //CLOSE
+                if (gamepad1.y) { //CLOSE
                     rightGripperPos = 0.4;
-                } else if (gamepad2.b) {
+                } else if (gamepad1.b) {
                     rightGripperPos = 0.3;
                 }
-                /*if (rightGripperPos > 0.5) {
-                    rightGripperPos = 0.5;
-                } else if (rightGripperPos < 0.2) {
-                    rightGripperPos = 0.2;
-                }*/
                 gripperRight.setPosition(rightGripperPos);
 
             //MODE 1: MANUAL / ZERO-ING MODE
             } else {
 
-                armTarget = leftArm.getCurrentPosition() + (gamepad2.x ? 50:0) + (gamepad2.a ? -50:0);
-                wristTarget = wristMotor.getCurrentPosition() + (gamepad2.y ? 60:0) + (gamepad2.b ? -60:0);
+                armTarget = leftArm.getCurrentPosition() + (gamepad1.x ? 50:0) + (gamepad1.a ? -50:0);
+                wristTarget = wristMotor.getCurrentPosition() + (gamepad1.y ? 60:0) + (gamepad1.b ? -60:0);
 
-                if (gamepad2.dpad_left) {
+                if (gamepad1.dpad_left) {
                     leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -295,25 +192,13 @@ public class Main extends LinearOpMode {
 
 
             //DRONE SHOOTER // JOINT GAMEPAD CONTROLED
-            if (gamepad1.left_bumper && gamepad2.left_bumper) {
+            if (gamepad1.left_bumper) {
                 //ADD DRONE SERVO HERE
                 shooter.setPosition(0.5);
             } else {
                 shooter.setPosition(0.44);
             }
             telemetry.addData("DRONE: ", shooter.getPosition());
-
-            /* OLD GRIPPER CODE
-
-            Left + Right Grippers
-            if (gamepad2.x || gamepad2.a) {
-                leftGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-                rightGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-            }
-
-            gripperLeft.setPosition(leftGripperPos);
-            gripperRight.setPosition(rightGripperPos);
-            */
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -330,39 +215,5 @@ public class Main extends LinearOpMode {
             sleep(20);
         }
     }
-    private void initTfod() {
-        // Create the TensorFlow processor the easy way.
-        tfod = TfodProcessor.easyCreateWithDefaults();
 
-        // Create the vision portal the easy way.
-        if (USE_WEBCAM) {
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                    hardwareMap.get(WebcamName.class, "Webcam 1"), tfod);
-        } else {
-            visionPortal = VisionPortal.easyCreateWithDefaults(
-                    BuiltinCameraDirection.BACK, tfod);
-        }
-
-    }   // end method initTfod()
-
-    /**
-     * Add telemetry about TensorFlow Object Detection (TFOD) recognitions.
-     */
-    private void telemetryTfod() {
-
-        List<Recognition> currentRecognitions = tfod.getRecognitions();
-        telemetry.addData("# Objects Detected", currentRecognitions.size());
-
-        // Step through the list of recognitions and display info for each one.
-        for (Recognition recognition : currentRecognitions) {
-            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
-            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
-
-            telemetry.addData(""," ");
-            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
-            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-        }   // end for() loop
-
-    }   // end method telemetryTfod()
 }
