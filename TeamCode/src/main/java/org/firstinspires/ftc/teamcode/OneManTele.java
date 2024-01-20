@@ -14,6 +14,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class OneManTele extends LinearOpMode {
 
     int gp2Mode = 0;
+    int armTarget = 0;
+    int wristTarget = 0;
+    double leftGripperPos = 0.3;
+    double rightGripperPos = 0.3;
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -31,11 +35,6 @@ public class OneManTele extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        double leftGripperPos = 0.3;
-        double rightGripperPos = 0.3;
-        int armTarget = 0;
-        int wristTarget = 0;
-        int reverseConst = 1;
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -113,10 +112,10 @@ public class OneManTele extends LinearOpMode {
                 rightBackPower /= max;
             }
 
-            leftFrontDrive.setPower(leftFrontPower*reverseConst);
-            rightFrontDrive.setPower(rightFrontPower*reverseConst);
-            leftBackDrive.setPower(leftBackPower*reverseConst);
-            rightBackDrive.setPower(rightBackPower*reverseConst);
+            leftFrontDrive.setPower(leftFrontPower);
+            rightFrontDrive.setPower(rightFrontPower);
+            leftBackDrive.setPower(leftBackPower);
+            rightBackDrive.setPower(rightBackPower);
 
             /*GAMEPAD 2 CONTROLS
 
@@ -203,7 +202,7 @@ public class OneManTele extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             String gp2String = "MANUAL"; if (gp2Mode == 0) {gp2String = "ENCODER";}
-            telemetry.addData("GP2 Mode", gp2String+" | R-Const: "+reverseConst);
+            telemetry.addData("GP2 Mode", gp2String);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("Arm Pos = "+armTarget+" | ", "Left = "+leftArm.getCurrentPosition()+" | Right = "+rightArm.getCurrentPosition());
