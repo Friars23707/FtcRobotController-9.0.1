@@ -86,6 +86,7 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
         leftEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_back_drive"));
         rightEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_front_drive"));
         backEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
+        rightEncoderWheel.setDirection(Encoder.Direction.REVERSE);
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -197,6 +198,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             //telemetry.addData("Status", "Run Time: " + runtime.toString());
             //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            telemetry.addData("XLF : ", leftTicks);
+            telemetry.addData("XRF : ", rightTicks);
+
             telemetry.addData("XL : ", leftCount);
             telemetry.addData("XR : ", rightCount);
             //telemetry.addData("B : ", backCount);
