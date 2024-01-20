@@ -50,8 +50,8 @@ public class AutomaticFeedforwardTuner extends LinearOpMode {
         DcMotor rightArm = hardwareMap.get(DcMotor.class, "arm_motor_right"); // E1
         leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftArm.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
         leftArm.setTargetPosition(40);
         rightArm.setTargetPosition(40);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
