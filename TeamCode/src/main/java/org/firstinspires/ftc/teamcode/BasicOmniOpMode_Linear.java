@@ -32,8 +32,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+
+import org.firstinspires.ftc.teamcode.util.Encoder;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -63,9 +66,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Omni Linear OpMode1", group="Linear OpMode")
+@TeleOp(name="Basic: Omni Linear OpMode2", group="Linear OpMode")
 
-public class coding_drive_bot extends LinearOpMode {
+public class BasicOmniOpMode_Linear extends LinearOpMode {
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -73,13 +76,16 @@ public class coding_drive_bot extends LinearOpMode {
     private DcMotor leftBackDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor rightBackDrive = null;
-    private Servo SERVO_TEST = null;
+
+    Encoder leftEncoderWheel, rightEncoderWheel, backEncoderWheel;
 
     @Override
     public void runOpMode() {
 
-        double leftGripperPos = 0;
-        double rightGripperPos = 0;
+        // Initialize the hardware variables
+        leftEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_back_drive"));
+        rightEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_front_drive"));
+        backEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
 
         // Initialize the hardware variables. Note that the strings used here must correspond
         // to the names assigned during the robot configuration step on the DS or RC devices.
@@ -87,7 +93,6 @@ public class coding_drive_bot extends LinearOpMode {
         leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        SERVO_TEST = hardwareMap.get(Servo.class, "servo_test");
 
         // ########################################################################################
         // !!!            IMPORTANT Drive Information. Test your motor directions.            !!!!!
@@ -104,22 +109,45 @@ public class coding_drive_bot extends LinearOpMode {
         rightFrontDrive.setDirection(DcMotor.Direction.FORWARD);
         rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
 
-        SERVO_TEST.setDirection(Servo.Direction.FORWARD);
-
         // Wait for the game to start (driver presses PLAY)
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        int leftCountOld = 0;
+        int rightCountOld = 0;
+        int backCountOld = 0;
+
+        int rotation = 0;
+
+        double div = 41.1633333;
+
         waitForStart();
         runtime.reset();
 
+        int leftDefault = leftEncoderWheel.getCurrentPosition();
+        int rightDefault = rightEncoderWheel.getCurrentPosition();
+        int backDefault = backEncoderWheel.getCurrentPosition();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            int leftTicks = leftEncoderWheel.getCurrentPosition() - leftDefault;
+            int rightTicks = rightEncoderWheel.getCurrentPosition() - rightDefault;
+            int backTicks = backEncoderWheel.getCurrentPosition() - backDefault;
+
+            // Get the current counts for each encoder
+            int leftCount = leftTicks - leftCountOld;
+            int rightCount = rightTicks - rightCountOld;
+            int backCount = backTicks - backCountOld;
+
+            int rot = backCount;
+            rotation += rot;
+
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial   = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double lateral =  -gamepad1.left_stick_x;
+            double lateral =  gamepad1.left_stick_x;
             double yaw     =  gamepad1.right_stick_x;
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
@@ -141,13 +169,6 @@ public class coding_drive_bot extends LinearOpMode {
                 leftBackPower   /= max;
                 rightBackPower  /= max;
             }
-
-            //Left + Right Grippers
-            if (gamepad2.x || gamepad2.a) {
-                leftGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-                rightGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-            }
-            SERVO_TEST.setPosition(rightGripperPos);
 
             // This is test code:
             //
@@ -173,11 +194,19 @@ public class coding_drive_bot extends LinearOpMode {
             rightBackDrive.setPower(rightBackPower);
 
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
-            telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
-            telemetry.addData("Grippers | ", "Left: "+leftGripperPos+" Right: "+rightGripperPos);
-            telemetry.addData("Test Servo:", SERVO_TEST.getPosition());
+            //telemetry.addData("Status", "Run Time: " + runtime.toString());
+            //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
+            //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
+            telemetry.addData("XL : ", leftCount);
+            telemetry.addData("XR : ", rightCount);
+            //telemetry.addData("B : ", backCount);
+            telemetry.addData("rotation : ", rotation / div);
+            telemetry.addData("should divide by : ", rotation/3600);
             telemetry.update();
+
+            // Get the current counts for each encoder
+            leftCountOld = leftTicks;
+            rightCountOld = rightTicks;
+            backCountOld = backTicks;
         }
     }}
