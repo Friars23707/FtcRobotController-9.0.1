@@ -199,7 +199,9 @@ public class BasicOmniOpMode_Linear extends LinearOpMode {
             //telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             //telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("XLF : ", leftTicks);
+            telemetry.addData("Left Inches", leftTicks/333);
             telemetry.addData("XRF : ", rightTicks);
+            telemetry.addData("Right Inches", rightTicks/333);
 
             telemetry.addData("XL : ", leftCount);
             telemetry.addData("XR : ", rightCount);
