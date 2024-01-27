@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -5,14 +7,14 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.util.Encoder;
 
-@Autonomous(name="OdomAuto", group="Pushbot")
+@Autonomous(name="OdomAuto", group="Auto")
 public class OdomAuto extends LinearOpMode {
 
     // Declare our motors
     // Make sure your ID's match your configuration
     Encoder leftEncoderWheel, rightEncoderWheel, backEncoderWheel;
 
-    double cirucmfrence =  48 * Math.PI;
+    // double cirucmfrence = 48 * Math.PI;
 
     public void runOpMode() throws InterruptedException {
 
@@ -20,10 +22,6 @@ public class OdomAuto extends LinearOpMode {
         leftEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_back_drive"));
         rightEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "left_front_drive"));
         backEncoderWheel = new Encoder(hardwareMap.get(DcMotorEx.class, "right_front_drive"));
-
-        int leftCountOld = 0;
-        int rightCountOld = 0;
-        int backCountOld = 0;
 
         double div = 39.7902778;
         double rotation = 0;
@@ -37,6 +35,10 @@ public class OdomAuto extends LinearOpMode {
         int leftDefault = leftEncoderWheel.getCurrentPosition();
         int rightDefault = rightEncoderWheel.getCurrentPosition();
         int backDefault = backEncoderWheel.getCurrentPosition();
+
+        int leftCountOld = 0;
+        int rightCountOld = 0;
+        int backCountOld = 0;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -53,17 +55,18 @@ public class OdomAuto extends LinearOpMode {
             // Calculate the robot's position based on encoder counts
             // This will depend on your specific robot's configuration
             // Here is a simple example:
-            if (leftCount == rightCount) { // we are moving
+            if (Math.abs(backCount) < 2) { // we are moving
                 double localY = (leftCount + rightCount) / 2.0;
                 double localX = backCount;
                 yPos += localY * Math.cos(rotation) + localX * Math.sin(rotation);
                 xPos += localX * Math.cos(rotation) + localY * Math.sin(rotation);
-            } else {
-                int rot = leftCount - rightCount + backCount;
+            } else { // we are rotating
+                int rot = backCount;
                 rotation += rot / div;
             }
 
             // Display the real time stats
+            telemetry.addData("Rotation", "%d", rotation);
             telemetry.addData("Encoder Counts", "Left: %d  Right: %d  Back: %d", leftCount, rightCount, backCount);
             telemetry.addData("Position", "X: %.2f  Y: %.2f", xPos, yPos);
             telemetry.update();
