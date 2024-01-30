@@ -57,8 +57,8 @@ public class BlueAuto extends LinearOpMode {
     double yaw = 0;
     int armTarget = 250;
     int wristTarget = 40;
-    double leftGripperTar = 0.25;
-    double rightGripperTar = 0.5;
+    double leftGripperTar = 0.39;
+    double rightGripperTar = 0.4;
     int offset = 3600;
 
     @Override
@@ -116,20 +116,20 @@ public class BlueAuto extends LinearOpMode {
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             if (runtime.milliseconds() < 4900 - offset) { // move forward
                 axial = -0.5;
-                leftGripperTar = 0.25;
-                rightGripperTar = 0.5;
+                leftGripperTar = 0.39;
+                rightGripperTar = 0.4;
             } else if (runtime.milliseconds() < 6750 - offset) { // move left & move arm to score
                 axial = 0;
                 lateral = -0.5;
                 armTarget = 2800;
                 wristTarget = 1300;
-                leftGripperTar = 0.25;
-                rightGripperTar = 0.5;
+                leftGripperTar = 0.39;
+                rightGripperTar = 0.4;
             } else if (runtime.milliseconds() < 10700 - offset) { // move left & move arm to score
                 lateral = 0;
             } else if (runtime.milliseconds() < 11700 - offset) {
-                leftGripperTar = 0.6;
-                rightGripperTar = 0.2;
+                leftGripperTar = 0.45;
+                rightGripperTar = 0.3;
             }  else if (runtime.milliseconds() < 12700 - offset) {
                 armTarget = 250;
                 wristTarget = 40;

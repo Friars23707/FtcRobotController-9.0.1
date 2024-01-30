@@ -54,10 +54,10 @@ public class RedAutoFarSimple extends LinearOpMode {
     double axial = 0;  // Note: pushing stick forward gives negative value
     double lateral = 0;
     double yaw = 0;
-    int armTarget = 250;
-    int wristTarget = 40;
-    double leftGripperTar = 0.25;
-    double rightGripperTar = 0.5;
+    int armTarget = 0;
+    int wristTarget = 0;
+    double leftGripperTar = 0.39;
+    double rightGripperTar = 0.4;
 
     @Override
     public void runOpMode() {
@@ -94,6 +94,7 @@ public class RedAutoFarSimple extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
+        int waitForBears = 7000;
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -101,28 +102,28 @@ public class RedAutoFarSimple extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            if (runtime.milliseconds() < 1750) {
+            if (runtime.milliseconds() < 1750+waitForBears) {
                 lateral = 0;
-            } else if (runtime.milliseconds() < 2000) {
+            } else if (runtime.milliseconds() < 2000+waitForBears) {
                 lateral = 0.5;
-            } else if (runtime.milliseconds() < 5100) { // move forward
+            } else if (runtime.milliseconds() < 5100+waitForBears) { // move forward
                 axial = -0.5;
                 lateral = 0;
                 leftGripperTar = 0.25;
                 rightGripperTar = 0.5;
-            } else if (runtime.milliseconds() < 6250) { // move left & move arm to score
+            } else if (runtime.milliseconds() < 6250+waitForBears) { // move left & move arm to score
                 axial = 0;
                 lateral = 0.5;
                 armTarget = 2800;
                 wristTarget = 1300;
-                leftGripperTar = 0.25;
-                rightGripperTar = 0.5;
-            } else if (runtime.milliseconds() < 10200) { // move left & move arm to score
+                leftGripperTar = 0.39;
+                rightGripperTar = 0.4;
+            } else if (runtime.milliseconds() < 10200+waitForBears) { // move left & move arm to score
                 lateral = 0;
-            } else if (runtime.milliseconds() < 11200) {
-                leftGripperTar = 0.6;
-                rightGripperTar = 0.2;
-            }  else if (runtime.milliseconds() < 12200) {
+            } else if (runtime.milliseconds() < 11200+waitForBears) {
+                leftGripperTar = 0.45;
+                rightGripperTar = 0.3;
+            }  else if (runtime.milliseconds() < 12200+waitForBears) {
                 armTarget = 250;
                 wristTarget = 40;
                 lateral = -0.5;
