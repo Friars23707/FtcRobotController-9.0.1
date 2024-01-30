@@ -62,8 +62,8 @@ public class AutonClass extends LinearOpMode {
         leftArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        leftArm.setDirection(DcMotor.Direction.REVERSE);
-        rightArm.setDirection(DcMotor.Direction.FORWARD);
+        leftArm.setDirection(DcMotor.Direction.FORWARD);
+        rightArm.setDirection(DcMotor.Direction.REVERSE);
         wristMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Gripper Servos
@@ -106,11 +106,11 @@ public class AutonClass extends LinearOpMode {
         //CENTER SPIKE PLACE
         } else if ((redAlliance == false && blueMark == 2) || (redAlliance == true && redMark == 2)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(65)
+                    .back(42)
                     .waitSeconds(2)
                     .build();
             trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                    .back(15)
+                    .back(6)
                     .build();
         } else if ((redAlliance == false && blueMark == 3) || (redAlliance == true && redMark == 3)) {
             trajMove1 = drive.trajectorySequenceBuilder(new Pose2d())
@@ -138,8 +138,8 @@ public class AutonClass extends LinearOpMode {
         //RED NEAR
         if (!isFar && redAlliance) {
             trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
+                    .strafeLeft(33)
                     .turn(Math.toRadians(-90))
-                    .back(32)
                     .build();
         //RED FAR
         } else if (isFar && redAlliance) {
