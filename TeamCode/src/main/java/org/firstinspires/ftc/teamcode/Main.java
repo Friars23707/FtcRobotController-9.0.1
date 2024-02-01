@@ -214,6 +214,21 @@ public class Main extends LinearOpMode {
                 if (gamepad2.dpad_down) { //INTAKE
                     armTarget = 0;
                     wristTarget = 0;
+                } else if (gamepad2.dpad_left) { //SCORE
+                    armTarget = 2450;
+                    wristTarget = 1700;
+                } else if (gamepad2.dpad_up) { //SCORE-LOW
+                    armTarget = 2800;
+                    wristTarget = 1300;
+                } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW
+                    armTarget = 3100;
+                    wristTarget = 1000;
+                }
+
+                /*
+                if (gamepad2.dpad_down) { //INTAKE
+                    armTarget = 0;
+                    wristTarget = 0;
                 } else if (gamepad2.dpad_left) { //HOME
                     armTarget = 250;
                     wristTarget = 0;
@@ -223,7 +238,7 @@ public class Main extends LinearOpMode {
                 } else if (gamepad2.dpad_right) { //SCORE-LOW
                     armTarget = 2800;
                     wristTarget = 1300;
-                }
+                }*/
 
                 if (gamepad2.x) { //CLOSE
                     leftGripperPos = 0.39;
