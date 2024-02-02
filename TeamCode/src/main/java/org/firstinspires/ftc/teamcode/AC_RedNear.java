@@ -9,6 +9,11 @@ public class AC_RedNear extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         AutonClass ac = new AutonClass(hardwareMap, telemetry, true, false);
+        while (!isStopRequested() && !isStarted()) {
+            ac.setCUSTOM_DELAY();
+            telemetry.addData("WAITING ", ac.CUSTOM_DELAY);
+            telemetry.update();
+        }
         waitForStart();
 
         ac.runProgram(0);

@@ -57,8 +57,8 @@ public class RedAuto extends LinearOpMode {
     double yaw = 0;
     int armTarget = 250;
     int wristTarget = 40;
-    double leftGripperTar = 0.25;
-    double rightGripperTar = 0.5;
+    double leftGripperTar = 0.39;
+    double rightGripperTar = 0.4;
     int offset = 3600;
 
     @Override
@@ -123,13 +123,13 @@ public class RedAuto extends LinearOpMode {
                 lateral = 0.5;
                 armTarget = 2800;
                 wristTarget = 1300;
-                leftGripperTar = 0.25;
-                rightGripperTar = 0.5;
+                leftGripperTar = 0.39;
+                rightGripperTar = 0.4;
             } else if (runtime.milliseconds() < 10200 - offset) { // move left & move arm to score
                 lateral = 0;
             } else if (runtime.milliseconds() < 11200 - offset) {
-                leftGripperTar = 0.6;
-                rightGripperTar = 0.2;
+                leftGripperTar = 0.45;
+                rightGripperTar = 0.3;
             }  else if (runtime.milliseconds() < 12200 - offset) {
                 armTarget = 250;
                 wristTarget = 40;
