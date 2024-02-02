@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
 
 //import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -20,6 +22,10 @@ import org.opencv.core.Mat;
 
 
 public class AutonClass extends LinearOpMode {
+
+    private HardwareMap hardwareMap;
+    private Gamepad gamepad1;
+
 
     private ElapsedTime runtime = new ElapsedTime();
 
