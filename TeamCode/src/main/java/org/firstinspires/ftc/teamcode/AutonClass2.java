@@ -175,7 +175,6 @@ public class AutonClass2 extends LinearOpMode {
             trajMoveU = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(3)
                     .build();
-
     }
 
 
@@ -193,12 +192,13 @@ public class AutonClass2 extends LinearOpMode {
         while (hwM == null && !isStopRequested()) {
             wait(1);
         }
-        double timeToWait = CUSTOM_DELAY - runtime.seconds();
+        double timeToWait;
 
         EOCV_Pipe1 pipe = new EOCV_Pipe1(hwM, telemetry);
         while (((redAlliance && (redMark == 0 || redMark == 4)) || (!redAlliance && (blueMark == 0 || blueMark == 4))) && !isStopRequested()) {
             redMark = pipe.getFinal_Red();
             blueMark = pipe.getFinal_Blue();
+            timeToWait = CUSTOM_DELAY - runtime.seconds();
             telem.addData("spikes", redMark+":"+blueMark);
             telem.addData("WAITING ", timeToWait);
             telem.update();
