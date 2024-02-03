@@ -139,13 +139,13 @@ public class AutonClass extends LinearOpMode {
                         .back(4)
                         .waitSeconds(0.1)
                         .strafeRight(22)
-                        .forward(4)
+                        .back(3)
                         .build();
             } else {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                         .back(4)
                         .waitSeconds(0.1)
-                        .strafeRight(22)
+                        .strafeLeft(22)
                         .turn(Math.toRadians(180))
                         .build();
             }
@@ -159,11 +159,13 @@ public class AutonClass extends LinearOpMode {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                         .back(8)
                         .turn(Math.toRadians(-90))
+                        .back(3)
                         .build();
             } else {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                        .back(6)
+                        .back(8)
                         .turn(Math.toRadians(90))
+                        .back(3)
                         .build();
             }
         //RIGHT SPIKE PLACE
@@ -172,18 +174,18 @@ public class AutonClass extends LinearOpMode {
                     .back(25)
                     .waitSeconds(0.3)
                     .turn(Math.toRadians(90))
-                    .forward(4)
+                    .forward(3)
                     .build();
             if (redAlliance) {
-                trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                        .back(4)
-                        .strafeLeft(23)
-                        .build();
-            } else {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                         .back(3)
                         .strafeLeft(23)
                         .turn(Math.toRadians(180))
+                        .build();
+            } else {
+                trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
+                        .back(3)
+                        .strafeRight(23)
                         .build();
             }
         //FAILSAFE
@@ -200,7 +202,7 @@ public class AutonClass extends LinearOpMode {
         //NEAR
         if (!isFar) {
             trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
-                    .back(26)
+                    .back(24)
                     .build();
         //FAR
         } else if (isFar) {
@@ -233,10 +235,10 @@ public class AutonClass extends LinearOpMode {
                         .build();
             } else { // Right
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
-                        .strafeLeft(24)
+                        .strafeLeft(37)
                         .build();
                 trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeRight(27)
+                        .strafeRight(39)
                         .waitSeconds(0.1)
                         .back(16)
                         .build();

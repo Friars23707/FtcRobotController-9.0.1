@@ -30,18 +30,37 @@ new Pose2d(10, -60, Math.toRadians(-90)))
                                 .build()
  */
 
+/*.followTrajectorySequence(drive ->
+                        drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
+                                .setReversed(false)
+                                .back(10)
+                                .strafeLeft(5)
+                                .turn(Math.toRadians(180))
+                                .strafeRight(5)
+                                .forward(10)
+                                .back(10)
+                                .strafeRight(30)
+                                .forward(10)
+                                .turn(Math.toRadians(90))
+                                .build()
+                ); RED RIGHT*/
+
 public class RedNearT1 {
 
     public static void main(String[] args) {
-        MeepMeep meepMeep = new MeepMeep(800);
+        MeepMeep meepMeep = new MeepMeep(600);
 
         RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 17)
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
-                                .setReversed(true)
-                                .splineTo(new Vector2d(8, -34), Math.toRadians(0))
+                                .setReversed(false)
+                                .strafeTo(new Vector2d(25, -32))
+                                .turn(Math.toRadians(-90))
+                                .forward(20)
+                                .waitSeconds(0.2)
+                                .strafeTo(new Vector2d(50, -28))
                                 .build()
                 );
 

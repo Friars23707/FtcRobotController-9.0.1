@@ -1,14 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import java.util.List;
 
 
 @TeleOp(name="Main", group=".Primary")
@@ -212,15 +209,19 @@ public class Main extends LinearOpMode {
             if (gp2Mode == 0) {
 
                 if (gamepad2.dpad_down) { //INTAKE
+                    setArmPow(0.5);
                     armTarget = 0;
                     wristTarget = 0;
-                } else if (gamepad2.dpad_left) { //SCORE
-                    armTarget = 2450;
-                    wristTarget = 1700;
-                } else if (gamepad2.dpad_up) { //SCORE-LOW
+                } else if (gamepad2.dpad_left) { //SCORE-LOW
+                    setArmPow(0.4);
                     armTarget = 2800;
                     wristTarget = 1300;
+                } else if (gamepad2.dpad_up) { //SCORE-MID-LOW
+                    setArmPow(0.4);
+                    armTarget = 3000;
+                    wristTarget = 1100;
                 } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW
+                    setArmPow(0.4);
                     armTarget = 3100;
                     wristTarget = 1000;
                 }
@@ -286,10 +287,7 @@ public class Main extends LinearOpMode {
             wristMotor.setTargetPosition(wristTarget);
             wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //Set the power for all encoders ((LEFT AND RIGHT ARM MUST MATCH OR KABOOM))
-            leftArm.setPower(0.3);
-            rightArm.setPower(0.3);
-            wristMotor.setPower(0.3);
+
 
 
             //DRONE SHOOTER // JOINT GAMEPAD CONTROLED
@@ -327,6 +325,13 @@ public class Main extends LinearOpMode {
             // Share the CPU.
             sleep(20);
         }
+    }
+
+    public void setArmPow(double pow) {
+        //Set the power for all encoders ((LEFT AND RIGHT ARM MUST MATCH OR KABOOM))
+        leftArm.setPower(pow);
+        rightArm.setPower(pow);
+        wristMotor.setPower(pow);
     }
 
 }
