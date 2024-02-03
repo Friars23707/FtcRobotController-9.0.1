@@ -59,8 +59,14 @@ public class RedNearT1 {
                                 .strafeTo(new Vector2d(25, -32))
                                 .turn(Math.toRadians(-90))
                                 .forward(20)
+                                .addDisplacementMarker(() -> {
+                                    //DROP PURPLE
+                                })
                                 .waitSeconds(0.2)
                                 .strafeTo(new Vector2d(50, -28))
+                                .addDisplacementMarker(() -> {
+                                    //DROP YELLOW
+                                })
                                 .build()
                 );
 
