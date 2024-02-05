@@ -123,11 +123,11 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         leftRedMat.release();
         rightRedMat.release();
         centerRedMat.release();
-        //redMat.release();
+        redMat.release();
         leftBlueMat.release();
         rightBlueMat.release();
         centerBlueMat.release();
-        //blueMat.release();
+        blueMat.release();
 
         //DRAW RECTS
         /*Left*/Imgproc.rectangle(input, new Point(0, 200), new Point(300, 600), new Scalar(0, 255, 0), 5);
