@@ -24,8 +24,12 @@ public class MeepMeepTesting {
                                 .turn(Math.toRadians(180))
                                 .back(65)
                                 .strafeTo(new Vector2d(42, -40))
-                                .strafeRight(31)
-                                .back(16)
+                                .strafeTo(new Vector2d(20, -12))
+                                .forward(79)
+                                .back(79)
+                                .strafeTo(new Vector2d(42, -30))
+                                .strafeRight(20)
+                                .back(15)
                                 .build()
                 );
 
