@@ -2,11 +2,26 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public class AutonTrajectories {
+
+    public HardwareMap hwM;
+    private DcMotor leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
+    private DcMotor rightArm = hwM.get(DcMotor.class, "arm_motor_right"); // E1
+    private DcMotor wristMotor = hwM.get(DcMotor.class, "wrist_motor"); // E3
+
+    public Servo gripperLeft = hwM.get(Servo.class, "left_gripper"); //Servo-E0
+
+    public Servo gripperRight = hwM.get(Servo.class, "right_gripper"); //Servo-E1
+
     public static TrajectorySequence setTrajectory(boolean red, boolean far, int rmark, int bmark) {
         TrajectorySequence trajectory = null;
         SampleMecanumDrive drive = null;
@@ -23,6 +38,10 @@ public class AutonTrajectories {
                     .strafeTo(new Vector2d(40, -23))
                     .turn(Math.toRadians(-90))
                     .forward(20)
+                    .addDisplacementMarker(() -> {
+                        // Perform the "Drop" action here
+                        dropSpike();
+                    })
                     .back(20)
                     .strafeTo(new Vector2d(42, -34))
                     .strafeRight(25)
@@ -117,5 +136,33 @@ public class AutonTrajectories {
                     .build();
         }
         return trajectory;
+    }
+
+
+    public void dropSpike() throws InterruptedException {
+        gripperLeft.setPosition(0.45);
+        Thread.sleep(2000);
+    }
+
+    public void boardDrop() throws InterruptedException {
+        leftArm.setPower(0.5);
+        rightArm.setPower(0.5);
+        wristMotor.setPower(0.5);
+
+        leftArm.setTargetPosition(3100);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setTargetPosition(3100);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setTargetPosition(1000);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Thread.sleep(4000);
+        gripperRight.setPosition(0.3);
+        Thread.sleep(1000);
+        leftArm.setTargetPosition(0);
+        leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightArm.setTargetPosition(0);
+        rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        wristMotor.setTargetPosition(0);
+        wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 }
