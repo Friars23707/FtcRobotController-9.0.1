@@ -23,8 +23,8 @@ import org.opencv.core.Mat;
 
 public class AutonClass extends LinearOpMode {
 
-    private HardwareMap hardwareMap;
-    private Gamepad gamepad1;
+    public HardwareMap hardwareMap;
+    public Gamepad gamepad1;
 
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -83,8 +83,13 @@ public class AutonClass extends LinearOpMode {
 
     }
 
+    //public void setPARK_ZONE() {if (gamepad1 == null)
+
+    //}
     public void setCUSTOM_DELAY() {
         if (gamepad1 == null) {
+            telem.addData("No controller detected", true);
+            telem.update();
             return;
         }
         if (!gamepad1.y && !gamepad1.a) {
@@ -145,7 +150,7 @@ public class AutonClass extends LinearOpMode {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                         .back(4)
                         .waitSeconds(0.1)
-                        .strafeLeft(22)
+                        .strafeRight(22)
                         .turn(Math.toRadians(180))
                         .build();
             }
@@ -157,15 +162,19 @@ public class AutonClass extends LinearOpMode {
                     .build();
             if (redAlliance) {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                        .back(8)
+                        .back(14)
+                        .waitSeconds(0.1)
+                        .forward(6)
                         .turn(Math.toRadians(-90))
-                        .back(3)
+                        .back(1)
                         .build();
             } else {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
-                        .back(8)
+                        .back(14)
+                        .waitSeconds(0.1)
+                        .forward(6)
                         .turn(Math.toRadians(90))
-                        .back(3)
+                        .back(1)
                         .build();
             }
         //RIGHT SPIKE PLACE
@@ -185,7 +194,7 @@ public class AutonClass extends LinearOpMode {
             } else {
                 trajMove2 = drive.trajectorySequenceBuilder(trajMove1.end())
                         .back(3)
-                        .strafeRight(23)
+                        .strafeLeft(23)
                         .build();
             }
         //FAILSAFE
@@ -202,7 +211,7 @@ public class AutonClass extends LinearOpMode {
         //NEAR
         if (!isFar) {
             trajMove3 = drive.trajectorySequenceBuilder(trajMove2.end())
-                    .back(24)
+                    .back(23)
                     .build();
         //FAR
         } else if (isFar) {
@@ -219,58 +228,121 @@ public class AutonClass extends LinearOpMode {
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
                         .strafeLeft(13)
                         .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeRight(18)
-                        .waitSeconds(0.1)
-                        .back(16)
-                        .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeLeft(35)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                } else {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeRight(18)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                }
             } else if (redMark == 2) { // Center
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
                         .strafeLeft(22)
-                        .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeRight(24)
                         .waitSeconds(0.1)
-                        .back(15)
+                        .back(1)
                         .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .forward(4)
+                            .waitSeconds(0.1)
+                            .strafeLeft(26)
+                            .waitSeconds(0.1)
+                            .back(15)
+                            .build();
+                } else {
+
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .forward(4)
+                            .waitSeconds(0.1)
+                            .strafeRight(24)
+                            .waitSeconds(0.1)
+                            .back(15)
+                            .build();
+                }
             } else { // Right
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
                         .strafeLeft(37)
                         .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeRight(39)
-                        .waitSeconds(0.1)
-                        .back(16)
-                        .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeLeft(15)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                } else {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeRight(42)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                }
             }
         } else {
             if (blueMark == 1) { // Left backboard
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
-                        .strafeRight(30)
-                        .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeLeft(33)
+                        .back(6)
                         .waitSeconds(0.1)
-                        .back(16)
+                        .strafeRight(33)
                         .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeLeft(36)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                } else {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeRight(14)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                }
             } else if (blueMark == 2) { // Center backboard
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
-                        .strafeRight(24)
-                        .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeLeft(24)
+                        .back(4)
                         .waitSeconds(0.1)
-                        .back(16)
+                        .strafeRight(26)
                         .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeLeft(26)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                } else {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .back(4)
+                            .waitSeconds(0.1)
+                            .strafeRight(24)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                }
             } else { // Right backboard
                 trajMove4 = drive.trajectorySequenceBuilder(trajMove3.end())
+                        .back(4)
+                        .waitSeconds(0.1)
                         .strafeRight(17)
                         .build();
-                trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
-                        .strafeLeft(19)
-                        .waitSeconds(0.1)
-                        .back(16)
-                        .build();
+                if (!isFar) {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeLeft(19)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                } else {
+                    trajMove5 = drive.trajectorySequenceBuilder(trajMove4.end())
+                            .strafeRight(19)
+                            .waitSeconds(0.1)
+                            .back(16)
+                            .build();
+                }
             }
         }
 
@@ -310,7 +382,7 @@ public class AutonClass extends LinearOpMode {
 
     public void spikeDrop() throws InterruptedException {
         gripperLeft.setPosition(0.45);
-        Thread.sleep(2000);
+        Thread.sleep(800);
     }
 
     public void boardDrop() throws InterruptedException {

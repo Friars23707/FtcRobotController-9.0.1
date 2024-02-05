@@ -214,16 +214,16 @@ public class Main extends LinearOpMode {
                     wristTarget = 0;
                 } else if (gamepad2.dpad_left) { //SCORE-LOW
                     setArmPow(0.4);
+                    armTarget = 2450;
+                    wristTarget = 1700;
+                } else if (gamepad2.dpad_up) { //SCORE-MID-LOW
+                    setArmPow(0.4);
                     armTarget = 2800;
                     wristTarget = 1300;
-                } else if (gamepad2.dpad_up) { //SCORE-MID-LOW
+                } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW IS TOO LOW!
                     setArmPow(0.4);
                     armTarget = 3000;
                     wristTarget = 1100;
-                } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW
-                    setArmPow(0.4);
-                    armTarget = 3100;
-                    wristTarget = 1000;
                 }
 
                 /*
