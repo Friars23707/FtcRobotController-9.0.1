@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.List;
+
 
 @TeleOp(name="Main", group=".Primary")
 
@@ -16,6 +18,7 @@ public class Main extends LinearOpMode {
     int armPos = 0;
     int gp2Mode = 0;
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
+
 
     // Declare OpMode members for each of the 4 motors.
     private ElapsedTime runtime = new ElapsedTime();
@@ -38,6 +41,7 @@ public class Main extends LinearOpMode {
         int armTarget = 0;
         int wristTarget = 0;
         int reverseConst = 1;
+
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
