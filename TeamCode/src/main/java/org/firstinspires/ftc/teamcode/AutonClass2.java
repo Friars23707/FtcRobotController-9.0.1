@@ -113,7 +113,7 @@ public class AutonClass2 extends LinearOpMode {
         }
 
         // Get trajectories
-        trajMoveU = AutonTrajectories.setTrajectory(redAlliance, isFar, blueMark, redMark);
+        trajMoveU = AutonTrajectories.setTrajectory(redAlliance, isFar, blueMark, redMark, drive);
 
         /*
          * Run the actual trajectories.

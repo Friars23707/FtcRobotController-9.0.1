@@ -22,9 +22,8 @@ public class AutonTrajectories {
 
     public Servo gripperRight = hwM.get(Servo.class, "right_gripper"); //Servo-E1
 
-    public static TrajectorySequence setTrajectory(boolean red, boolean far, int rmark, int bmark) {
+    public static TrajectorySequence setTrajectory(boolean red, boolean far, int rmark, int bmark, SampleMecanumDrive drive) {
         TrajectorySequence trajectory = null;
-        SampleMecanumDrive drive = null;
 
         //Red Near Left
         if (red && !far && rmark == 1) {
@@ -40,7 +39,7 @@ public class AutonTrajectories {
                     .forward(20)
                     .addDisplacementMarker(() -> {
                         // Perform the "Drop" action here
-                        dropSpike();
+
                     })
                     .back(20)
                     .strafeTo(new Vector2d(42, -34))
@@ -60,6 +59,7 @@ public class AutonTrajectories {
 
             //Red Far Left
         } else if (red && far && rmark == 1) {
+            drive.setPoseEstimate(new Pose2d(-35, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
                     .strafeTo(new Vector2d(-47, -50))
                     .turn(Math.toRadians(-90))
