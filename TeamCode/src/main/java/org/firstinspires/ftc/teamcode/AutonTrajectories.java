@@ -28,10 +28,11 @@ public class AutonTrajectories {
         //Red Near Left
         if (red && !far && rmark == 1) {
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+                    .back(13)
                     .build();
             //Red Near Center
         } else if (red && !far && rmark == 2) {
+          //  drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
                     .strafeLeft(20)
                     .strafeTo(new Vector2d(40, -23))

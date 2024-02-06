@@ -111,16 +111,20 @@ public class AutonClass2 extends LinearOpMode {
         if (timeToWait > 0) {
             sleep((long) (timeToWait*1000));
         }
-
+        telem.addData("TRAJ: ", "getting");
+        telem.update();
         // Get trajectories
         trajMoveU = AutonTrajectories.setTrajectory(redAlliance, isFar, blueMark, redMark, drive);
-
+        telem.addData("Trajectory", trajMoveU);
+        telem.addData("TRAJ: ", "started");
+        telem.update();
         /*
          * Run the actual trajectories.
          */
         drive.followTrajectorySequence(trajMoveU);
 
-
+        telem.addData("TRAJ: ", "ended");
+        telem.update();
 
     }
 
