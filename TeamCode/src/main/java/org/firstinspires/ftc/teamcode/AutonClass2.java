@@ -50,7 +50,6 @@ public class AutonClass2 extends LinearOpMode {
         redAlliance = isRed;
         isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
-        drive.setPoseEstimate(new Pose2d());
 
         //Arm Motors
         leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
@@ -111,17 +110,129 @@ public class AutonClass2 extends LinearOpMode {
         if (timeToWait > 0) {
             sleep((long) (timeToWait*1000));
         }
-        telem.addData("TRAJ: ", "getting");
-        telem.update();
-        // Get trajectories
-        trajMoveU = AutonTrajectories.setTrajectory(redAlliance, isFar, blueMark, redMark, drive);
-        telem.addData("Trajectory", trajMoveU);
-        telem.addData("TRAJ: ", "started");
-        telem.update();
+        // Get trajectories=
+
+        TrajectorySequence trajectory = null;
+
+        //Red Near Left
+        if (redAlliance && !isFar && redMark == 1) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(13)
+                    .build();
+            //Red Near Center
+        } else if (redAlliance && !isFar && redMark == 2) {
+            drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
+                    .strafeLeft(5)
+                    .strafeTo(new Vector2d(40, -23))
+                    .turn(Math.toRadians(-90))
+                    .forward(20)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .back(20)
+                    .strafeTo(new Vector2d(42, -34))
+                    .strafeRight(25)
+                    .back(16)
+                    .build();
+            //Red Near Right
+        } else if (redAlliance && !isFar && redMark == 3) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
+                    .setReversed(false)
+                    .strafeTo(new Vector2d(25, -32))
+                    .turn(Math.toRadians(-90))
+                    .forward(20)
+                    .waitSeconds(0.2)
+                    .strafeTo(new Vector2d(50, -28))
+                    .build();
+
+            //Red Far Left
+        } else if (redAlliance && isFar && redMark == 1) {
+            drive.setPoseEstimate(new Pose2d(-35, -60, Math.toRadians(-90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
+                    .strafeTo(new Vector2d(-47, -50))
+                    .turn(Math.toRadians(-90))
+                    .strafeRight(30)
+                    .strafeLeft(10)
+                    .back(8)
+                    .waitSeconds(0.2)
+                    .back(7)
+                    .strafeRight(25)
+                    .back(75)
+                    .strafeTo(new Vector2d(42, -29))
+                    .strafeRight(20)
+                    .back(16)
+                    .build();
+            //Red Far Center
+        } else if (redAlliance && isFar && redMark == 2) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
+                    .back(65)
+                    .forward(22)
+                    .waitSeconds(0.2)
+                    .back(12)
+                    .turn(Math.toRadians(-90))
+                    .back(75)
+                    .strafeTo(new Vector2d(42, -34))
+                    .strafeRight(25)
+                    .back(16)
+                    .build();
+            //Red Far Right
+        } else if (redAlliance && isFar && redMark == 3) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
+                    .strafeTo(new Vector2d(-50, -30))
+                    .turn(Math.toRadians(90))
+                    .forward(18)
+                    .waitSeconds(0.2)
+                    .back(15)
+                    .strafeLeft(20)
+                    .turn(Math.toRadians(180))
+                    .back(65)
+                    .strafeTo(new Vector2d(42, -40))
+                    .strafeRight(31)
+                    .back(16)
+                    .build();
+
+            //Blue Near Left
+        } else if (!redAlliance && !isFar && blueMark == 1) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+            //Blue Near Center
+        } else if (!redAlliance && !isFar && blueMark == 2) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+            //Blue Near Right
+        } else if (!redAlliance && !isFar && blueMark == 3) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+
+            //Blue Far Left
+        } else if (!redAlliance && isFar && blueMark == 1) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+            //Blue Far Center
+        } else if (!redAlliance && isFar && blueMark == 2) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+            //Blue Far Right
+        } else if (!redAlliance && isFar && blueMark == 3) {
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+                    .back(3)
+                    .build();
+        }
+
         /*
          * Run the actual trajectories.
          */
-        drive.followTrajectorySequence(trajMoveU);
+        drive.followTrajectorySequence(trajectory);
 
         telem.addData("TRAJ: ", "ended");
         telem.update();
@@ -147,7 +258,7 @@ public class AutonClass2 extends LinearOpMode {
         pipe.stop();
     }
 
-    public void spikeDrop() throws InterruptedException {
+    public void spikeDrop() throws InterruptedException, RuntimeException {
         gripperLeft.setPosition(0.45);
         Thread.sleep(2000);
     }

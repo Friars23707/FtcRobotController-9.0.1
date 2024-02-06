@@ -32,9 +32,9 @@ public class AutonTrajectories {
                     .build();
             //Red Near Center
         } else if (red && !far && rmark == 2) {
-          //  drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
-                    .strafeLeft(20)
+        //  drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(0)))
+                    .back(20)
                     .strafeTo(new Vector2d(40, -23))
                     .turn(Math.toRadians(-90))
                     .forward(20)
