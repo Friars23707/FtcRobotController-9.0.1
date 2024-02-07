@@ -116,15 +116,36 @@ public class AutonClass2 extends LinearOpMode {
 
         //Red Near Left
         if (redAlliance && !isFar && redMark == 1) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(13)
+            drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
+                    .setReversed(false)
+                    .strafeTo(new Vector2d(25, -32))
+                    .turn(Math.toRadians(-90))
+                    .forward(18)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeTo(new Vector2d(42, -28))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeRight(18)
+                    .back(12)
                     .build();
             //Red Near Center
         } else if (redAlliance && !isFar && redMark == 2) {
             drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
                     .strafeLeft(5)
-                    .strafeTo(new Vector2d(40, -23))
+                    .strafeTo(new Vector2d(40, -28))
                     .turn(Math.toRadians(-90))
                     .forward(20)
                     .addDisplacementMarker(() -> {
@@ -136,17 +157,31 @@ public class AutonClass2 extends LinearOpMode {
                     })
                     .back(20)
                     .strafeTo(new Vector2d(42, -34))
-                    .strafeRight(25)
-                    .back(16)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeRight(24)
+                    .back(15)
                     .build();
             //Red Near Right
         } else if (redAlliance && !isFar && redMark == 3) {
+            drive.setPoseEstimate(new Pose2d(10, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, -60, Math.toRadians(-90)))
                     .setReversed(false)
                     .strafeTo(new Vector2d(25, -32))
                     .turn(Math.toRadians(-90))
-                    .forward(20)
-                    .waitSeconds(0.2)
+                    .forward(18)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .strafeTo(new Vector2d(50, -28))
                     .build();
 
@@ -159,16 +194,32 @@ public class AutonClass2 extends LinearOpMode {
                     .strafeRight(30)
                     .strafeLeft(10)
                     .back(8)
-                    .waitSeconds(0.2)
+                    .waitSeconds(0.1)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .waitSeconds(0.1)
                     .back(7)
                     .strafeRight(25)
                     .back(75)
-                    .strafeTo(new Vector2d(42, -29))
-                    .strafeRight(20)
-                    .back(16)
+                    .strafeTo(new Vector2d(42, -19))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeRight(18)
+                    .back(12)
                     .build();
             //Red Far Center
         } else if (redAlliance && isFar && redMark == 2) {
+            drive.setPoseEstimate(new Pose2d(-35, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
                     .back(65)
                     .forward(22)
@@ -182,6 +233,7 @@ public class AutonClass2 extends LinearOpMode {
                     .build();
             //Red Far Right
         } else if (redAlliance && isFar && redMark == 3) {
+            drive.setPoseEstimate(new Pose2d(-35, -60, Math.toRadians(-90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
                     .strafeTo(new Vector2d(-50, -30))
                     .turn(Math.toRadians(90))
@@ -252,6 +304,7 @@ public class AutonClass2 extends LinearOpMode {
             timeToWait = CUSTOM_DELAY - runtime.seconds();
             telem.addData("spikes", redMark+":"+blueMark);
             telem.addData("WAITING ", timeToWait);
+            telem.addData("data", "Red: "+redAlliance+" far: "+isFar);
             telem.update();
             sleep(10);
         }
@@ -260,7 +313,7 @@ public class AutonClass2 extends LinearOpMode {
 
     public void spikeDrop() throws InterruptedException, RuntimeException {
         gripperLeft.setPosition(0.45);
-        Thread.sleep(2000);
+        Thread.sleep(800);
     }
 
     public void boardDrop() throws InterruptedException {
@@ -283,6 +336,7 @@ public class AutonClass2 extends LinearOpMode {
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setTargetPosition(0);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        Thread.sleep(1200);
     }
 
     public void runOpMode() throws InterruptedException {
