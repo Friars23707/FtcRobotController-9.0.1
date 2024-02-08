@@ -15,16 +15,28 @@ public class MeepMeepTesting {
                 // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                 .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                 .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(new Pose2d(-35, -60, Math.toRadians(-90)))
-                                .back(65)
-                                .forward(22)
-                                .waitSeconds(0.2)
+                        drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
+                                .setReversed(false)
+                                .strafeTo(new Vector2d(25, 32))
+                                .turn(Math.toRadians(90))
+                                .forward(18)
+                                .addDisplacementMarker(() -> {
+                                   /* try {
+                                        spikeDrop();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }*/
+                                })
+                                .strafeTo(new Vector2d(42, 28))
+                                .addDisplacementMarker(() -> {
+                                    /*try {
+                                        boardDrop();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }*/
+                                })
+                                .strafeLeft(18)
                                 .back(12)
-                                .turn(Math.toRadians(-90))
-                                .back(75)
-                                .strafeTo(new Vector2d(42, -34))
-                                .strafeRight(25)
-                                .back(16)
                                 .build()
                 );
 

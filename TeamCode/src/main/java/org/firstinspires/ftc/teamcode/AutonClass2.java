@@ -250,18 +250,62 @@ public class AutonClass2 extends LinearOpMode {
 
             //Blue Near Left
         } else if (!redAlliance && !isFar && blueMark == 1) {
+            drive.setPoseEstimate(new Pose2d(10, 60, Math.toRadians(90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
                     .back(3)
                     .build();
             //Blue Near Center
         } else if (!redAlliance && !isFar && blueMark == 2) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+            drive.setPoseEstimate(new Pose2d(10, 60, Math.toRadians(90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
+                    .strafeRight(5)
+                    .strafeTo(new Vector2d(40, 22))
+                    .turn(Math.toRadians(90))
+                    .forward(20)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .back(20)
+                    .strafeTo(new Vector2d(42, 34))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeLeft(24)
+                    .back(15)
                     .build();
             //Blue Near Right
         } else if (!redAlliance && !isFar && blueMark == 3) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+            drive.setPoseEstimate(new Pose2d(10, 60, Math.toRadians(90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
+                    .setReversed(false)
+                    .strafeTo(new Vector2d(25, 32))
+                    .turn(Math.toRadians(90))
+                    .forward(18)
+                    .addDisplacementMarker(() -> {
+                       try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeTo(new Vector2d(42, 28))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeLeft(18)
+                    .back(12)
                     .build();
 
             //Blue Far Left
