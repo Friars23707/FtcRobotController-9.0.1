@@ -18,7 +18,12 @@ public class AutonOrientation extends LinearOpMode {
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
-        DistanceSensor sensorDistance = hardwareMap.get(DistanceSensor.class, "sensor_distance");
+        DistanceSensor sensorDistance = null;
+        if (speed > 0) {
+            hardwareMap.get(DistanceSensor.class, "left_dist");
+        } else {
+            hardwareMap.get(DistanceSensor.class, "right_dist");
+        }
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery

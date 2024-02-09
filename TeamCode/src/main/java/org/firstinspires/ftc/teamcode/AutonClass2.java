@@ -369,6 +369,11 @@ public class AutonClass2 extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
+        if (redAlliance) {
+            orient.orientRobot(2);
+        } else {
+            orient.orientRobot(-2);
+        }
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
         wristMotor.setPower(0.5);
