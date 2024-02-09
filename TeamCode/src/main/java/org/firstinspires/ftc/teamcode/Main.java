@@ -16,8 +16,6 @@ import java.util.List;
 public class Main extends LinearOpMode {
 
     int armPos = 0;
-    int gp2Mode = 0;
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
 
     // Declare OpMode members for each of the 4 motors.
@@ -202,86 +200,69 @@ public class Main extends LinearOpMode {
 
              */
 
-            //MODE SWAP
-            if (gamepad2.back) {
-                gp2Mode = 0;
-            } else if (gamepad2.options) {
-                gp2Mode = 1;
+            if (gamepad2.dpad_down) { //INTAKE
+                setArmPow(0.5);
+                armTarget = 0;
+                wristTarget = 0;
+            } else if (gamepad2.dpad_left) { //SCORE-LOW
+                setArmPow(0.4);
+                armTarget = 2450;
+                wristTarget = 1700;
+            } else if (gamepad2.dpad_up) { //SCORE-MID-LOW
+                setArmPow(0.4);
+                armTarget = 2800;
+                wristTarget = 1300;
+            } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW IS TOO LOW!
+                setArmPow(0.4);
+                armTarget = 3000;
+                wristTarget = 1100;
             }
 
-            //MODE 0: ENCODER / MAIN MODE
-            if (gp2Mode == 0) {
+            /*
+            if (gamepad2.dpad_down) { //INTAKE
+                armTarget = 0;
+                wristTarget = 0;
+            } else if (gamepad2.dpad_left) { //HOME
+                armTarget = 250;
+                wristTarget = 0;
+            } else if (gamepad2.dpad_up) { //SCORE
+                armTarget = 2450;
+                wristTarget = 1700;
+            } else if (gamepad2.dpad_right) { //SCORE-LOW
+                armTarget = 2800;
+                wristTarget = 1300;
+            }*/
 
-                if (gamepad2.dpad_down) { //INTAKE
-                    setArmPow(0.5);
-                    armTarget = 0;
-                    wristTarget = 0;
-                } else if (gamepad2.dpad_left) { //SCORE-LOW
-                    setArmPow(0.4);
-                    armTarget = 2450;
-                    wristTarget = 1700;
-                } else if (gamepad2.dpad_up) { //SCORE-MID-LOW
-                    setArmPow(0.4);
-                    armTarget = 2800;
-                    wristTarget = 1300;
-                } else if (gamepad2.dpad_right) { //SCORE-LOW-LOW IS TOO LOW!
-                    setArmPow(0.4);
-                    armTarget = 3000;
-                    wristTarget = 1100;
-                }
-
-                /*
-                if (gamepad2.dpad_down) { //INTAKE
-                    armTarget = 0;
-                    wristTarget = 0;
-                } else if (gamepad2.dpad_left) { //HOME
-                    armTarget = 250;
-                    wristTarget = 0;
-                } else if (gamepad2.dpad_up) { //SCORE
-                    armTarget = 2450;
-                    wristTarget = 1700;
-                } else if (gamepad2.dpad_right) { //SCORE-LOW
-                    armTarget = 2800;
-                    wristTarget = 1300;
-                }*/
-
-                if (gamepad2.x) { //CLOSE
-                    leftGripperPos = 0.39;
-                } else if (gamepad2.a) {
-                    leftGripperPos = 0.45;
-                }
-                /*if (leftGripperPos > 0.6) {
-                    leftGripperPos = 0.6;
-                } else if (leftGripperPos < 0.2) {
-                    leftGripperPos = 0.2;
-                }*/
-                gripperLeft.setPosition(leftGripperPos);
-
-                if (gamepad2.y) { //CLOSE
-                    rightGripperPos = 0.4;
-                } else if (gamepad2.b) {
-                    rightGripperPos = 0.3;
-                }
-                /*if (rightGripperPos > 0.5) {
-                    rightGripperPos = 0.5;
-                } else if (rightGripperPos < 0.2) {
-                    rightGripperPos = 0.2;
-                }*/
-                gripperRight.setPosition(rightGripperPos);
-
-            //MODE 1: MANUAL / ZERO-ING MODE
-            } else {
-
-                armTarget = leftArm.getCurrentPosition() + (gamepad2.x ? 50:0) + (gamepad2.a ? -50:0);
-                wristTarget = wristMotor.getCurrentPosition() + (gamepad2.y ? 60:0) + (gamepad2.b ? -60:0);
-
-                if (gamepad2.dpad_left) {
-                    leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }
-
+            if (gamepad2.x) { //CLOSE
+                leftGripperPos = 0.39;
+            } else if (gamepad2.a) {
+                leftGripperPos = 0.45;
             }
+            gripperLeft.setPosition(leftGripperPos);
+
+            if (gamepad2.y) { //CLOSE
+                rightGripperPos = 0.4;
+            } else if (gamepad2.b) {
+                rightGripperPos = 0.3;
+            }
+            gripperRight.setPosition(rightGripperPos);
+
+
+            if (gamepad2.left_stick_y != 0) {
+                armTarget = leftArm.getCurrentPosition() + Math.round(gamepad2.left_stick_y*4);
+            }
+            if (gamepad2.right_stick_y != 0) {
+                wristTarget = wristMotor.getCurrentPosition() + Math.round(gamepad2.right_stick_y*4);
+            }
+
+
+            if (gamepad2.right_bumper) {
+                leftArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                rightArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                wristMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            }
+
+
 
             //Set arms to the wanted position based on inputs
             leftArm.setTargetPosition(armTarget);
@@ -303,22 +284,9 @@ public class Main extends LinearOpMode {
             }
             telemetry.addData("DRONE: ", shooter.getPosition());
 
-            /* OLD GRIPPER CODE
-
-            Left + Right Grippers
-            if (gamepad2.x || gamepad2.a) {
-                leftGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-                rightGripperPos = (gamepad2.x ? 0.5 : 0) + (gamepad2.a ? -0.5 : 0) + 0.5;
-            }
-
-            gripperLeft.setPosition(leftGripperPos);
-            gripperRight.setPosition(rightGripperPos);
-            */
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            String gp2String = "MANUAL"; if (gp2Mode == 0) {gp2String = "ENCODER";}
-            telemetry.addData("GP2 Mode", gp2String+" | R-Const: "+reverseConst);
             telemetry.addData("Front left/Right", "%4.2f, %4.2f", leftFrontPower, rightFrontPower);
             telemetry.addData("Back  left/Right", "%4.2f, %4.2f", leftBackPower, rightBackPower);
             telemetry.addData("Arm Pos = "+armTarget+" | ", "Left = "+leftArm.getCurrentPosition()+" | Right = "+rightArm.getCurrentPosition());
