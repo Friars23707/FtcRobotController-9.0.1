@@ -42,11 +42,17 @@ public class AutonClass2 extends LinearOpMode {
     public Telemetry telem;
 
     AutonOrientation orient = new AutonOrientation();
-    // TO USE, SIMPLY PASTE: orient.orientRobot(2);
+    /*
+    TO USE, SIMPLY PASTE: double result = orient.orientRobot(2);
+    MAKE SURE TO THEN DO result = orient.orientRobot(-2); TO TEST OTHER DIRECTION
+
+    note that it may be slightly off due to rapid start/stops
+    result will be a double of the distance from the wall (cm) so if you want to then get it a distance of n cm from the wall
+    make it drive (result - n) / 2.54 with rr (now in in)
+    */
 
     TrajectorySequence trajMoveU;
     public AutonClass2(HardwareMap no, Telemetry tm, boolean isRed, boolean s_isFar) {
-
         hwM = no;
         telem = tm;
         redAlliance = isRed;

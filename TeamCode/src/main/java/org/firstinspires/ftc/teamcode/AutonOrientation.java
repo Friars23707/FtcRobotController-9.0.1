@@ -12,7 +12,7 @@ public class AutonOrientation extends LinearOpMode {
     // Declare OpMode members.
     private static ElapsedTime runtime = new ElapsedTime();
 
-    public void orientRobot(int speed) {
+    public double orientRobot(int speed) {
         // Initialize the hardware variables
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
@@ -54,7 +54,7 @@ public class AutonOrientation extends LinearOpMode {
                     frontRightDrive.setPower(0);
                     backLeftDrive.setPower(0);
                     backRightDrive.setPower(0);
-                    break;  // exit the loop
+                    return currentDistance;  // exit the loop
                 } else {
                     // Otherwise, continue turning
                     frontLeftDrive.setPower(speed);
@@ -69,6 +69,7 @@ public class AutonOrientation extends LinearOpMode {
             telemetry.addData("Distance", distance);
             telemetry.update();
         }
+        return sensorDistance.getDistance(DistanceUnit.CM);  // exit the loop
     }
     public void runOpMode() throws InterruptedException {
         /*This just needs to exist so
