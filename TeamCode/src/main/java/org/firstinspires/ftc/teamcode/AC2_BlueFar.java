@@ -10,7 +10,7 @@ public class AC2_BlueFar extends LinearOpMode {
     public void runOpMode() throws InterruptedException, OpModeManagerImpl.ForceStopException {
         AutonClass2 ac = new AutonClass2(hardwareMap, telemetry, false, true);
         while (!isStopRequested() && !isStarted()) {
-            ac.setCUSTOM_DELAY();
+            ac.setCUSTOM_DELAY(gamepad1);
             telemetry.addData("WAITING ", ac.CUSTOM_DELAY);
             telemetry.update();
         }
