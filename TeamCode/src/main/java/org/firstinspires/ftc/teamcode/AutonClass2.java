@@ -41,6 +41,8 @@ public class AutonClass2 extends LinearOpMode {
     public HardwareMap hwM;
     public Telemetry telem;
 
+    AutonOrientation orient = new AutonOrientation();
+    // TO USE, SIMPLY PASTE: orient.orientRobot(2);
 
     TrajectorySequence trajMoveU;
     public AutonClass2(HardwareMap no, Telemetry tm, boolean isRed, boolean s_isFar) {
