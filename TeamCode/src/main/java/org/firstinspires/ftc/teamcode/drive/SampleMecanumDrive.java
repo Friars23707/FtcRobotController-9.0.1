@@ -300,6 +300,9 @@ public class SampleMecanumDrive extends MecanumDrive {
         return 0.0;
     }
 
+    public void breakFollowing() {
+        trajectorySequenceRunner.breakFollowing();
+    }
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
         return new MinVelocityConstraint(Arrays.asList(
                 new AngularVelocityConstraint(maxAngularVel),
