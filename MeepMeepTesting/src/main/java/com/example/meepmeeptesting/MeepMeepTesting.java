@@ -17,17 +17,19 @@ public class MeepMeepTesting {
                 .followTrajectorySequence(drive ->
                         drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
                                 .setReversed(false)
-                                .strafeTo(new Vector2d(25, 32))
+                                .strafeRight(20)
+                                .strafeTo(new Vector2d(40, 32))
                                 .turn(Math.toRadians(90))
-                                .forward(18)
+                                .forward(12)
                                 .addDisplacementMarker(() -> {
-                                   /* try {
+                                    /*try {
                                         spikeDrop();
                                     } catch (InterruptedException e) {
                                         throw new RuntimeException(e);
                                     }*/
                                 })
-                                .strafeTo(new Vector2d(42, 28))
+                                .back(5)
+                                .strafeTo(new Vector2d(40, 40))
                                 .addDisplacementMarker(() -> {
                                     /*try {
                                         boardDrop();
@@ -35,8 +37,8 @@ public class MeepMeepTesting {
                                         throw new RuntimeException(e);
                                     }*/
                                 })
-                                .strafeLeft(18)
-                                .back(12)
+                                .strafeLeft(30)
+                                .back(15)
                                 .build()
                 );
 

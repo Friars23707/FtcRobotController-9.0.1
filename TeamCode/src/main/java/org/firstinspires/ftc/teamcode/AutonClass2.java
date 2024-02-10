@@ -300,7 +300,29 @@ public class AutonClass2 extends LinearOpMode {
         } else if (!redAlliance && !isFar && blueMark == 1) {
             drive.setPoseEstimate(new Pose2d(10, 60, Math.toRadians(90)));
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+                    .setReversed(false)
+                    .strafeRight(20)
+                    .strafeTo(new Vector2d(40, 32))
+                    .turn(Math.toRadians(90))
+                    .forward(12)
+                    .addDisplacementMarker(() -> {
+                                    try {
+                                        spikeDrop();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                    })
+                    .back(5)
+                    .strafeTo(new Vector2d(40, 40))
+                    .addDisplacementMarker(() -> {
+                                    try {
+                                        boardDrop();
+                                    } catch (InterruptedException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                    })
+                    .strafeLeft(30)
+                    .back(15)
                     .build();
             //Blue Near Center
         } else if (!redAlliance && !isFar && blueMark == 2) {
