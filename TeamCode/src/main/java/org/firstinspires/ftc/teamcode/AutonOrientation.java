@@ -12,14 +12,14 @@ public class AutonOrientation extends LinearOpMode {
     // Declare OpMode members.
     private static ElapsedTime runtime = new ElapsedTime();
 
-    public double orientRobot(int speed) {
+    public double orientRobot(int speed, boolean red) {
         // Initialize the hardware variables
         DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
         DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
         DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
         DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         DistanceSensor sensorDistance = null;
-        if (speed > 0) {
+        if (red) {
             hardwareMap.get(DistanceSensor.class, "left_dist");
         } else {
             hardwareMap.get(DistanceSensor.class, "right_dist");

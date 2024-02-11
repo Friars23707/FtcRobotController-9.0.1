@@ -42,12 +42,15 @@ public class AutonClass2 extends LinearOpMode {
 
     AutonOrientation orient = new AutonOrientation();
     /*
-    TO USE, SIMPLY PASTE: double result = orient.orientRobot(2);
-    MAKE SURE TO THEN DO result = orient.orientRobot(-2); TO TEST OTHER DIRECTION
+    TO USE, SIMPLY PASTE: double result = orient.orientRobot(2, true);
+    MAKE SURE TO THEN DO result = orient.orientRobot(-2, true); TO TEST OTHER DIRECTION
 
     note that it may be slightly off due to rapid start/stops
     result will be a double of the distance from the wall (cm) so if you want to then get it a distance of n cm from the wall
     make it drive (result - n) / 2.54 with rr (now in in)
+
+    true = red alliance
+    false = blue alliance
     */
 
     TrajectorySequence trajMoveU;
