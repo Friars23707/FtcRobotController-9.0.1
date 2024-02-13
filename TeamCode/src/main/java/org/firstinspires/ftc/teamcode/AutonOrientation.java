@@ -38,9 +38,8 @@ public class AutonOrientation extends LinearOpMode {
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !isStopRequested()) {
 
-            // Get the current distance reading from the sensor
+            // Assert false so silly gradle stops complaining
             assert false;
-            double distance = sensorDistance.getDistance(DistanceUnit.INCH);
 
             // Variables to keep track of the minimum distance and the current distance
             double minDistance = Double.MAX_VALUE;
