@@ -1,83 +1,86 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 public class AutonOrientation extends LinearOpMode {
 
     // Declare OpMode members.
     private static ElapsedTime runtime = new ElapsedTime();
 
-    public double orientRobot(int speed, boolean red) {
+    public boolean orientRobot(int rot, boolean red, SampleMecanumDrive drive) {
         // Initialize the hardware variables
-        DcMotor frontLeftDrive = hardwareMap.get(DcMotor.class, "front_left_drive");
-        DcMotor frontRightDrive = hardwareMap.get(DcMotor.class, "front_right_drive");
-        DcMotor backLeftDrive = hardwareMap.get(DcMotor.class, "back_left_drive");
-        DcMotor backRightDrive = hardwareMap.get(DcMotor.class, "back_right_drive");
         DistanceSensor sensorDistance = null;
+        DistanceSensor sensorDistanceForwards = hardwareMap.get(DistanceSensor.class, "forward_dist");
+
+        int success = 0;
+
         if (red) {
             hardwareMap.get(DistanceSensor.class, "left_dist");
         } else {
             hardwareMap.get(DistanceSensor.class, "right_dist");
         }
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        frontLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        frontRightDrive.setDirection(DcMotor.Direction.REVERSE);
-        backLeftDrive.setDirection(DcMotor.Direction.FORWARD);
-        backRightDrive.setDirection(DcMotor.Direction.REVERSE);
+        Trajectory turnSegment = drive.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(rot)))
+                .build();
+
+        boolean shouldStop = false; // Initialize boolean flag
 
         // Run until the end of the match (driver presses STOP)
         while (opModeIsActive() && !isStopRequested()) {
 
             // Get the current distance reading from the sensor
-            double distance = sensorDistance.getDistance(DistanceUnit.CM);
+            assert false;
+            double distance = sensorDistance.getDistance(DistanceUnit.INCH);
 
             // Variables to keep track of the minimum distance and the current distance
             double minDistance = Double.MAX_VALUE;
             double currentDistance;
 
             // Run until the end of the match (driver presses STOP)
-            while (opModeIsActive() && !isStopRequested()) {
+            while (opModeIsActive() && !shouldStop) {
 
                 // Get the current distance reading from the sensor
-                currentDistance = sensorDistance.getDistance(DistanceUnit.CM);
+                currentDistance = sensorDistance.getDistance(DistanceUnit.INCH);
 
                 // If the current distance is less than our tracked minimum, update the minimum
-                if (currentDistance < minDistance) {
+                if (currentDistance > minDistance) {
+                    shouldStop = true;
+                } else {
                     minDistance = currentDistance;
+                    ++success;
                 }
 
-                // If the current distance starts to increase, we've found the minimum distance point
-                if (currentDistance > minDistance) {
-                    frontLeftDrive.setPower(0);
-                    frontRightDrive.setPower(0);
-                    backLeftDrive.setPower(0);
-                    backRightDrive.setPower(0);
-                    return currentDistance;  // exit the loop
-                } else {
-                    // Otherwise, continue turning
-                    frontLeftDrive.setPower(speed);
-                    frontRightDrive.setPower(-speed);
-                    backLeftDrive.setPower(speed);
-                    backRightDrive.setPower(-speed);
+                if (isStopRequested()) {
+                    // Perform any necessary cleanup or actions before stopping
+                    shouldStop = true; // Set the flag to true
                 }
+
+                drive.followTrajectory(turnSegment);
             }
 
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Distance", distance);
-            telemetry.update();
+            Trajectory strafeSegment = drive.trajectoryBuilder(turnSegment.end())
+                    .back(sensorDistanceForwards.getDistance(DistanceUnit.INCH) - 28)
+                    .strafeLeft((sensorDistance.getDistance(DistanceUnit.INCH) - 14) * (red ? 1 : 0))
+                    .build();
+
+            // Execute the strafing trajectory
+            drive.followTrajectory(strafeSegment);
         }
-        return sensorDistance.getDistance(DistanceUnit.CM);  // exit the loop
+        if (success > 1) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    public void runOpMode() throws InterruptedException {
-        /*This just needs to exist so
-        that we can use linearOpMode vars*/
-    }
+    public void runOpMode() throws InterruptedException { } // needs to exist
 }
