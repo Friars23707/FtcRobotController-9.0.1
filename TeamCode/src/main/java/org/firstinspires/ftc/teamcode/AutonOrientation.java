@@ -67,10 +67,12 @@ public class AutonOrientation extends LinearOpMode {
                 drive.followTrajectory(turnSegment);
             }
 
-            Trajectory strafeSegment = drive.trajectoryBuilder(turnSegment.end())
-                    .back(sensorDistanceForwards.getDistance(DistanceUnit.INCH) - 28)
-                    .strafeLeft((sensorDistance.getDistance(DistanceUnit.INCH) - 14) * (red ? 1 : 0))
-                    .build();
+            if (success > 1) { // We are properly oriented
+                Trajectory strafeSegment = drive.trajectoryBuilder(turnSegment.end())
+                        .back(sensorDistanceForwards.getDistance(DistanceUnit.INCH) - 28)
+                        .strafeLeft((sensorDistance.getDistance(DistanceUnit.INCH) - 14) * (red ? 1 : 0))
+                        .build();
+            }
 
             // Execute the strafing trajectory
             drive.followTrajectory(strafeSegment);
