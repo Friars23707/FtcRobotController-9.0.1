@@ -49,7 +49,7 @@ public class AutonOrientation extends LinearOpMode {
             while (opModeIsActive() && !shouldStop) {
 
                 // Get the current distance reading from the sensor
-                currentDistance = sensorDistance.getDistance(DistanceUnit.INCH);
+                currentDistance = sensorDistanceForwards.getDistance(DistanceUnit.INCH);
 
                 // If the current distance is less than our tracked minimum, update the minimum
                 if (currentDistance > minDistance) {
@@ -67,8 +67,9 @@ public class AutonOrientation extends LinearOpMode {
                 drive.followTrajectory(turnSegment);
             }
 
+            Trajectory strafeSegment = null;
             if (success > 1) { // We are properly oriented
-                Trajectory strafeSegment = drive.trajectoryBuilder(turnSegment.end())
+                strafeSegment = drive.trajectoryBuilder(turnSegment.end())
                         .back(sensorDistanceForwards.getDistance(DistanceUnit.INCH) - 28)
                         .strafeLeft((sensorDistance.getDistance(DistanceUnit.INCH) - 14) * (red ? 1 : 0))
                         .build();
