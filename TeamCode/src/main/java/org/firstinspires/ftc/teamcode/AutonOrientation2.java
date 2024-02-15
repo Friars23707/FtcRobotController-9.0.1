@@ -25,11 +25,22 @@ public class AutonOrientation2 extends LinearOpMode {
 
     public void orientRobot(DistanceSensor distR, DistanceSensor distL) {
         // Initialize the hardware variables
-        double distance = (distR.getDistance(DistanceUnit.INCH) + distL.getDistance(DistanceUnit.INCH)) / 2;
+        double distance = getDistance(distR, distL);
         telem.addData("Distance", distance);
         telem.addData("Left", distL.getDistance(DistanceUnit.INCH));
         telem.addData("Right", distR.getDistance(DistanceUnit.INCH));
         telem.update();
+
+        Trajectory fix2 = drive.trajectoryBuilder(new Pose2d())
+                .back(8)
+                .build();
+
+        while (distance > 12) {
+
+            // Execute the strafing trajectory
+            drive.followTrajectory(fix2);
+
+        }
 
         Trajectory fix = drive.trajectoryBuilder(new Pose2d())
                 .back(distance - 12)
@@ -37,6 +48,11 @@ public class AutonOrientation2 extends LinearOpMode {
 
         // Execute the strafing trajectory
         drive.followTrajectory(fix);
+
+    }
+
+    public double getDistance(DistanceSensor r, DistanceSensor l) {
+        return (r.getDistance(DistanceUnit.INCH) + l.getDistance(DistanceUnit.INCH)) / 2;
     }
 
     public void gripperCenter(DistanceSensor distC) {

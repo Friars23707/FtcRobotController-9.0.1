@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -40,7 +41,12 @@ public class AutonClass2 extends LinearOpMode {
     public HardwareMap hwM;
     public Telemetry telem;
 
-    AutonOrientation orient = new AutonOrientation();
+    public DistanceSensor distC;
+    public DistanceSensor distBL;
+    public DistanceSensor distBR;
+
+
+    AutonOrientation2 orient;
     /*
     TO USE, SIMPLY PASTE: int result = orient.orientRobot(45, true, drive);
     MAKE SURE TO THEN DO if (result) { result = orient.orientRobot(-45, true, drive); } TO TEST OTHER DIRECTION IF NEEDED
@@ -59,6 +65,7 @@ public class AutonClass2 extends LinearOpMode {
         redAlliance = isRed;
         isFar = s_isFar;
         drive = new SampleMecanumDrive(no);
+        orient = new AutonOrientation2(drive, telem);
 
         //Arm Motors
         leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
@@ -78,6 +85,11 @@ public class AutonClass2 extends LinearOpMode {
 
         gripperLeft.setPosition(0.39);
         gripperRight.setPosition(0.4);
+
+        //Sensors
+        distC = hwM.get(DistanceSensor.class, "dist_c");
+        distBL = hwM.get(DistanceSensor.class, "dist_b_l");
+        distBR = hwM.get(DistanceSensor.class, "dist_b_r");
 
     }
 
@@ -433,11 +445,7 @@ public class AutonClass2 extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
-       /* if (redAlliance) {
-            orient.orientRobot(2);
-        } else {
-            orient.orientRobot(-2);
-        }*/
+       orient.orientRobot(distBR, distBL);
 
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);

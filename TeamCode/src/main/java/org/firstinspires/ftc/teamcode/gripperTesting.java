@@ -15,7 +15,7 @@ RIGHT GRIPPER
  */
 
 @TeleOp
-public class gripperPoses extends LinearOpMode {
+public class gripperTesting extends LinearOpMode {
     private Servo gripperLeft;
     @Override
     public void runOpMode() throws InterruptedException {
