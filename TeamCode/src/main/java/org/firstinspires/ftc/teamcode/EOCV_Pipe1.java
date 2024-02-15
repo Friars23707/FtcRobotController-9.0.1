@@ -151,5 +151,7 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
 
     public void stop() {
         cam.stopStreaming();
+        cam.pauseViewport();
+        cam.stopRecordingPipeline();
     }
 }

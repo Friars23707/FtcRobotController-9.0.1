@@ -1,15 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -23,11 +27,60 @@ public class AprilTagPipeline extends LinearOpMode {
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;
 
+    public double yawError;
+    public double bearningError;
+    public double rangeError;
+    public void orient(SampleMecanumDrive drive, int tagID, HardwareMap hwM) {
+        getErrors(tagID, hwM);
+        Trajectory fix3 = drive.trajectoryBuilder(new Pose2d())
+                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(bearningError)))
+                .strafeRight(yawError)
+                .back(rangeError-12)
+                .build();
+        drive.followTrajectory(fix3);
+    }
+
+    public void getErrors(int tagID, HardwareMap hwM) {
+        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+
+        // Initialize the Apriltag Detection process
+        initAprilTag(hwM);
+
+        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+
+        while (opModeIsActive() && !isStopRequested()) {
+            targetFound = false;
+            desiredTag  = null;
+
+            // Step through the list of detected tags and look for a matching tag
+            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+            for (AprilTagDetection detection : currentDetections) {
+                // Look to see if we have size info on this tag.
+                if (detection.metadata != null) {
+                    // Yes, we want to use this tag.
+                    if (detection.id == tagID || detection.id == tagID+3) {
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;
+                    }
+                }
+            }
+
+            if (targetFound) {
+                bearningError = desiredTag.ftcPose.bearing;
+                yawError = desiredTag.ftcPose.yaw;
+                rangeError = desiredTag.ftcPose.range;
+                break;
+            }
+        }
+
+    }
+
     public void runOpMode() {
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
 
         // Initialize the Apriltag Detection process
-        initAprilTag();
+        initAprilTag(hardwareMap);
 
         setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
@@ -43,20 +96,25 @@ public class AprilTagPipeline extends LinearOpMode {
                 // Look to see if we have size info on this tag.
                 if (detection.metadata != null) {
                     // Yes, we want to use this tag.
-                    targetFound = true;
-                    desiredTag = detection;
-                    break;  // don't look any further.
+                    if (detection.id == 5 || detection.id == 2) {
+                        targetFound = true;
+                        desiredTag = detection;
+                        break;
+                    }
                 }
             }
 
             if (targetFound) {
-                telemetry.addData("Found", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("range", desiredTag.ftcPose.range);
+                telemetry.addData("bearing", desiredTag.ftcPose.bearing);
+                telemetry.addData("yaw", desiredTag.ftcPose.yaw);
             } else {
                 telemetry.addData("\n>","No detections\n");
             }
+            telemetry.update();
         }
     }
-    private void initAprilTag() {
+    private void initAprilTag(HardwareMap hwM) {
         // Create the AprilTag processor by using a builder.
         aprilTag = new AprilTagProcessor.Builder().build();
 
@@ -72,7 +130,7 @@ public class AprilTagPipeline extends LinearOpMode {
         // Create the vision portal by using a builder.
 
         visionPortal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .setCamera(hwM.get(WebcamName.class, "Webcam 1"))
                 .addProcessor(aprilTag)
                 .build();
     }
@@ -85,13 +143,9 @@ public class AprilTagPipeline extends LinearOpMode {
 
         // Make sure camera is streaming before we try to set the exposure controls
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            telemetry.addData("Camera", "Waiting");
-            telemetry.update();
             while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
                 sleep(20);
             }
-            telemetry.addData("Camera", "Ready");
-            telemetry.update();
         }
 
         // Set camera controls unless we are stopping.

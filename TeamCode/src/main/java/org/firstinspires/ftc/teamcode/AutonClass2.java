@@ -47,6 +47,7 @@ public class AutonClass2 extends LinearOpMode {
 
 
     AutonOrientation2 orient;
+    AprilTagPipeline aprilTagP;
     /*
     TO USE, SIMPLY PASTE: int result = orient.orientRobot(45, true, drive);
     MAKE SURE TO THEN DO if (result) { result = orient.orientRobot(-45, true, drive); } TO TEST OTHER DIRECTION IF NEEDED
@@ -64,8 +65,11 @@ public class AutonClass2 extends LinearOpMode {
         telem = tm;
         redAlliance = isRed;
         isFar = s_isFar;
+
+        //Other Classes
         drive = new SampleMecanumDrive(no);
         orient = new AutonOrientation2(drive, telem);
+        aprilTagP = new AprilTagPipeline();
 
         //Arm Motors
         leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
@@ -445,7 +449,8 @@ public class AutonClass2 extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
-       orient.orientRobot(distBR, distBL);
+        aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
+        orient.orientRobot(distBR, distBL);
 
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);

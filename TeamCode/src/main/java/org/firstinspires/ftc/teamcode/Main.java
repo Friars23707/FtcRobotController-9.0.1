@@ -249,10 +249,10 @@ public class Main extends LinearOpMode {
 
 
             if (gamepad2.left_stick_y != 0) {
-                armTarget = leftArm.getCurrentPosition() + Math.round(gamepad2.left_stick_y*50);
+                armTarget = leftArm.getCurrentPosition() - Math.round(gamepad2.left_stick_y*50);
             }
             if (gamepad2.right_stick_y != 0) {
-                wristTarget = wristMotor.getCurrentPosition() + Math.round(gamepad2.right_stick_y*50);
+                wristTarget = wristMotor.getCurrentPosition() - Math.round(gamepad2.right_stick_y*50);
             }
 
 
