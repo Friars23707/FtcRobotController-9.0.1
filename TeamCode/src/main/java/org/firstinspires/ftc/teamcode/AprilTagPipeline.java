@@ -48,14 +48,16 @@ public class AprilTagPipeline extends LinearOpMode {
 
         setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
-        while (opModeIsActive() && !isStopRequested()) {
-            targetFound = false;
+        while (opModeIsActive() && !isStopRequested() && !targetFound) {
             desiredTag  = null;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
             for (AprilTagDetection detection : currentDetections) {
                 // Look to see if we have size info on this tag.
+                if (isStopRequested()) {
+                    break;
+                }
                 if (detection.metadata != null) {
                     // Yes, we want to use this tag.
                     if (detection.id == tagID || detection.id == tagID+3) {

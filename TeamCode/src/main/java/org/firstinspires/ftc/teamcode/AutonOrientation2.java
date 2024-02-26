@@ -27,15 +27,15 @@ public class AutonOrientation2 extends LinearOpMode {
         // Initialize the hardware variables
         double distance = getDistance(distR, distL, spike);
         telem.addData("Distance", distance);
-        telem.addData("Left", distL.getDistance(DistanceUnit.INCH));
-        telem.addData("Right", distR.getDistance(DistanceUnit.INCH));
+        telem.addData("Left", unit(distL));
+        telem.addData("Right", unit(distR));
         telem.update();
 
         Trajectory fix2 = drive.trajectoryBuilder(new Pose2d())
                 .back(8)
                 .build();
 
-        while (distance > 13) {
+        while (distance > 13 && !isStopRequested()) {
 
             // Execute the strafing trajectory
             drive.followTrajectory(fix2);
@@ -54,17 +54,17 @@ public class AutonOrientation2 extends LinearOpMode {
 
     public double getDistance(DistanceSensor r, DistanceSensor l, int spike) {
         if (spike%2 == 0) {
-            return (r.getDistance(DistanceUnit.INCH) + l.getDistance(DistanceUnit.INCH)) / 2;
+            return (unit(r) + unit(l)) / 2;
         } else if (spike%3 == 0) {
-            return r.getDistance(DistanceUnit.INCH);
+            return unit(r);
         } else {
-            return l.getDistance(DistanceUnit.INCH);
+            return unit(l);
         }
     }
 
     public void gripperCenter(DistanceSensor distC) {
         // Initialize the hardware variables
-        double distance = distC.getDistance(DistanceUnit.INCH);
+        double distance = unit(distC);
         telem.addData("Distance", distance);
         telem.update();
 
@@ -74,6 +74,10 @@ public class AutonOrientation2 extends LinearOpMode {
 
         // Execute the strafing trajectory
         drive.followTrajectory(fix);
+    }
+
+    public double unit(DistanceSensor d) {
+        return d.getDistance(DistanceUnit.INCH);
     }
     public void runOpMode() throws InterruptedException { } // needs to exist
 }

@@ -462,6 +462,9 @@ public class AutonClass2 extends LinearOpMode {
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setTargetPosition(1000);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        orient.gripperCenter(distC);
+
         Thread.sleep(4000);
         gripperRight.setPosition(0.3);
         Thread.sleep(1000);
