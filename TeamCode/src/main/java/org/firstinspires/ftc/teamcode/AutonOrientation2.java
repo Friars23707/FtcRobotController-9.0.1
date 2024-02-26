@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 public class AutonOrientation2 extends LinearOpMode {
 
     // Declare OpMode members.
-    private static ElapsedTime runtime = new ElapsedTime();
+    final private static ElapsedTime runtime = new ElapsedTime();
 
     public SampleMecanumDrive drive;
     public Telemetry telem;
@@ -23,9 +23,9 @@ public class AutonOrientation2 extends LinearOpMode {
         telem = telem2;
     }
 
-    public void orientRobot(DistanceSensor distR, DistanceSensor distL) {
+    public void orientRobot(DistanceSensor distR, DistanceSensor distL, int spike) {
         // Initialize the hardware variables
-        double distance = getDistance(distR, distL);
+        double distance = getDistance(distR, distL, spike);
         telem.addData("Distance", distance);
         telem.addData("Left", distL.getDistance(DistanceUnit.INCH));
         telem.addData("Right", distR.getDistance(DistanceUnit.INCH));
@@ -35,10 +35,11 @@ public class AutonOrientation2 extends LinearOpMode {
                 .back(8)
                 .build();
 
-        while (distance > 12) {
+        while (distance > 13) {
 
             // Execute the strafing trajectory
             drive.followTrajectory(fix2);
+            distance = getDistance(distR, distL, spike);
 
         }
 
@@ -51,8 +52,14 @@ public class AutonOrientation2 extends LinearOpMode {
 
     }
 
-    public double getDistance(DistanceSensor r, DistanceSensor l) {
-        return (r.getDistance(DistanceUnit.INCH) + l.getDistance(DistanceUnit.INCH)) / 2;
+    public double getDistance(DistanceSensor r, DistanceSensor l, int spike) {
+        if (spike%2 == 0) {
+            return (r.getDistance(DistanceUnit.INCH) + l.getDistance(DistanceUnit.INCH)) / 2;
+        } else if (spike%3 == 0) {
+            return r.getDistance(DistanceUnit.INCH);
+        } else {
+            return l.getDistance(DistanceUnit.INCH);
+        }
     }
 
     public void gripperCenter(DistanceSensor distC) {

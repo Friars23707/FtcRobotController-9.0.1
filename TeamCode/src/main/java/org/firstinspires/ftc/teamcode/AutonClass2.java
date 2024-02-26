@@ -450,7 +450,7 @@ public class AutonClass2 extends LinearOpMode {
 
     public void boardDrop() throws InterruptedException {
         aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
-        orient.orientRobot(distBR, distBL);
+        orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
 
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
