@@ -69,7 +69,7 @@ public class AutonClass2 extends LinearOpMode {
         //Other Classes
         drive = new SampleMecanumDrive(no);
         orient = new AutonOrientation2(drive, telem);
-        aprilTagP = new AprilTagPipeline();
+        aprilTagP = new AprilTagPipeline(telem);
 
         //Arm Motors
         leftArm = hwM.get(DcMotor.class, "arm_motor_left"); // E0
@@ -450,7 +450,7 @@ public class AutonClass2 extends LinearOpMode {
 
     public void boardDrop() throws InterruptedException {
         aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
-        orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
+        //orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
 
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);

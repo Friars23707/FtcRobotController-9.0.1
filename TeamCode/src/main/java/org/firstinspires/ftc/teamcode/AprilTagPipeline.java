@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
@@ -30,8 +32,16 @@ public class AprilTagPipeline extends LinearOpMode {
     public double yawError;
     public double bearningError;
     public double rangeError;
+
+    public Telemetry telem;
+
+    public AprilTagPipeline(Telemetry tm) {
+        telem = tm;
+    }
+
     public void orient(SampleMecanumDrive drive, int tagID, HardwareMap hwM) {
         getErrors(tagID, hwM);
+        sleep(1000);
         Trajectory fix3 = drive.trajectoryBuilder(new Pose2d())
                 .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(bearningError)))
                 .strafeRight(yawError)
@@ -68,12 +78,17 @@ public class AprilTagPipeline extends LinearOpMode {
                 }
             }
 
-            if (targetFound) {
-                bearningError = desiredTag.ftcPose.bearing;
-                yawError = desiredTag.ftcPose.yaw;
-                rangeError = desiredTag.ftcPose.range;
-                break;
-            }
+
+        }
+
+        if (targetFound) {
+            bearningError = desiredTag.ftcPose.bearing;
+            yawError = desiredTag.ftcPose.yaw;
+            rangeError = desiredTag.ftcPose.range;
+            telem.addData("bearing", bearningError);
+            telem.addData("yaw", yawError);
+            telem.addData("range", rangeError);
+            telem.update();
         }
 
     }
