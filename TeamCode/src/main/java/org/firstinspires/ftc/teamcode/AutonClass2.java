@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -317,7 +318,7 @@ public class AutonClass2 extends LinearOpMode {
             //Blue Near Left
         } else if (!redAlliance && !isFar && blueMark == 1) {
             drive.setPoseEstimate(new Pose2d(10, 60, Math.toRadians(90)));
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d())
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
                     .setReversed(false)
                     .strafeRight(20)
                     .strafeTo(new Vector2d(40, 32))
@@ -332,6 +333,7 @@ public class AutonClass2 extends LinearOpMode {
                     })
                     .back(5)
                     .strafeTo(new Vector2d(40, 40))
+                    .strafeRight(2)
                     .addDisplacementMarker(() -> {
                                     try {
                                         boardDrop();
@@ -449,21 +451,22 @@ public class AutonClass2 extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
-        aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
-        //orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
-
+        /*aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
+        TrajectorySequence fix1 = orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
+        drive.followTrajectorySequence(fix1);
+*/
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
         wristMotor.setPower(0.5);
 
-        leftArm.setTargetPosition(3300);
+        leftArm.setTargetPosition(3100);
         leftArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightArm.setTargetPosition(3300);
+        rightArm.setTargetPosition(3100);
         rightArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         wristMotor.setTargetPosition(1000);
         wristMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        orient.gripperCenter(distC);
+        //orient.gripperCenter(distC);
 
         Thread.sleep(4000);
         gripperRight.setPosition(0.3);

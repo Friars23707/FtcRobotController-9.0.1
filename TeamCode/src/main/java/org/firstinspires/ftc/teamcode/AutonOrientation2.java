@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.DistanceSensor;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 public class AutonOrientation2 extends LinearOpMode {
 
@@ -23,7 +24,7 @@ public class AutonOrientation2 extends LinearOpMode {
         telem = telem2;
     }
 
-    public void orientRobot(DistanceSensor distR, DistanceSensor distL, int spike) {
+    public TrajectorySequence orientRobot(DistanceSensor distR, DistanceSensor distL, int spike) {
         // Initialize the hardware variables
         double distance = getDistance(distR, distL, spike);
         telem.addData("Distance", distance);
@@ -31,24 +32,12 @@ public class AutonOrientation2 extends LinearOpMode {
         telem.addData("Right", unit(distR));
         telem.update();
 
-        Trajectory fix2 = drive.trajectoryBuilder(new Pose2d())
-                .back(8)
-                .build();
-
-        while (distance > 13 && !isStopRequested()) {
-
-            // Execute the strafing trajectory
-            drive.followTrajectory(fix2);
-            distance = getDistance(distR, distL, spike);
-
-        }
-
-        Trajectory fix = drive.trajectoryBuilder(new Pose2d())
+        TrajectorySequence fix = drive.trajectorySequenceBuilder(new Pose2d())
                 .back(distance - 12)
                 .build();
 
         // Execute the strafing trajectory
-        drive.followTrajectory(fix);
+        return fix;
 
     }
 

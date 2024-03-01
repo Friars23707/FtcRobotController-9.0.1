@@ -16,22 +16,24 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Autonomous(name="AprilTagPipeline", group="Linear OpMode")
 public class AprilTagPipeline extends LinearOpMode {
-    private VisionPortal visionPortal;               // Used to manage the video source.
-    private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTag = null;
+    public VisionPortal visionPortal;               // Used to manage the video source.
+    public AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    public AprilTagDetection desiredTag = null;
 
-    public double yawError;
-    public double bearningError;
-    public double rangeError;
+    public double yawError = 0;
+    public double bearningError = 0;
+    public double rangeError = 0;
 
     public Telemetry telem;
 
@@ -40,37 +42,63 @@ public class AprilTagPipeline extends LinearOpMode {
     }
 
     public void orient(SampleMecanumDrive drive, int tagID, HardwareMap hwM) {
+        telem.addData("PLSPLS", yawError);
+        telem.addData("PLSPLS2", bearningError);
+        telem.update();
         getErrors(tagID, hwM);
+        if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
         sleep(1000);
-        Trajectory fix3 = drive.trajectoryBuilder(new Pose2d())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(bearningError)))
-                .strafeRight(yawError)
-                .back(rangeError-12)
+        TrajectorySequence fix3 = drive.trajectorySequenceBuilder(new Pose2d())
+                //.strafeRight(yawError) //yawError
+                //.back(rangeError-12) //rangeError-12
+                .turn(Math.toRadians(bearningError * 5)) //Math.toRadians(bearningError)
                 .build();
-        drive.followTrajectory(fix3);
+        drive.followTrajectorySequence(fix3);
     }
 
     public void getErrors(int tagID, HardwareMap hwM) {
+        telem.addData("PLSPsssssLS", "NO!!!");
+        telem.update();
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
 
         // Initialize the Apriltag Detection process
         initAprilTag(hwM);
 
+        telem.addData("PLSPhhhLS", "NO!!!");
+        telem.update();
+
         setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
-        while (opModeIsActive() && !isStopRequested() && !targetFound) {
+        telem.addData("TESTSWAG", (opModeIsActive() && !isStopRequested() && !targetFound));
+        telem.addData("opmode", opModeIsActive());
+        telem.addData("isstop", !isStopRequested());
+        telem.addData("tarfound", !targetFound);
+        telem.update();
+
+        while (!isStopRequested() && !targetFound) {
             desiredTag  = null;
 
             // Step through the list of detected tags and look for a matching tag
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
+
+            for (AprilTagDetection ele: currentDetections) {
+                telem.addData("added", ele);
+            }
+            telem.addData("size", currentDetections.size());
+            telem.addData("TEST", "e");
+            telem.update();
+
             for (AprilTagDetection detection : currentDetections) {
                 // Look to see if we have size info on this tag.
                 if (isStopRequested()) {
                     break;
                 }
+                telem.addData("id-f", detection.id);
                 if (detection.metadata != null) {
                     // Yes, we want to use this tag.
+                    telem.addData("has data", "true");
                     if (detection.id == tagID || detection.id == tagID+3) {
+                        telem.addData("is correct", true);
                         targetFound = true;
                         desiredTag = detection;
                         break;
@@ -85,11 +113,17 @@ public class AprilTagPipeline extends LinearOpMode {
             bearningError = desiredTag.ftcPose.bearing;
             yawError = desiredTag.ftcPose.yaw;
             rangeError = desiredTag.ftcPose.range;
-            telem.addData("bearing", bearningError);
-            telem.addData("yaw", yawError);
-            telem.addData("range", rangeError);
-            telem.update();
         }
+
+        telem.addData("tag", tagID);
+        if (targetFound) {
+            telem.addData("range", desiredTag.ftcPose.range);
+            telem.addData("bearing", desiredTag.ftcPose.bearing);
+            telem.addData("yaw", desiredTag.ftcPose.yaw);
+        } else {
+            telem.addData("\n>","No detections\n");
+        }
+        telem.update();
 
     }
 
@@ -121,14 +155,7 @@ public class AprilTagPipeline extends LinearOpMode {
                 }
             }
 
-            if (targetFound) {
-                telemetry.addData("range", desiredTag.ftcPose.range);
-                telemetry.addData("bearing", desiredTag.ftcPose.bearing);
-                telemetry.addData("yaw", desiredTag.ftcPose.yaw);
-            } else {
-                telemetry.addData("\n>","No detections\n");
-            }
-            telemetry.update();
+
         }
     }
     private void initAprilTag(HardwareMap hwM) {
@@ -154,7 +181,11 @@ public class AprilTagPipeline extends LinearOpMode {
     private void    setManualExposure(int exposureMS, int gain) {
         // Wait for the camera to be open, then use the controls
 
+        telem.addData("vision", visionPortal);
+        telem.update();
         if (visionPortal == null) {
+            telem.addData("no vision", "womo womp");
+            telem.update();
             return;
         }
 
