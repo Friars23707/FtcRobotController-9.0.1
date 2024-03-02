@@ -65,12 +65,6 @@ public class AprilTagPipeline extends LinearOpMode {
 
         setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
-        telem.addData("TESTSWAG", (opModeIsActive() && !isStopRequested() && !targetFound));
-        telem.addData("opmode", opModeIsActive());
-        telem.addData("isstop", !isStopRequested());
-        telem.addData("tarfound", !targetFound);
-        telem.update();
-
         while (!isStopRequested() && !targetFound) {
             desiredTag  = null;
 
