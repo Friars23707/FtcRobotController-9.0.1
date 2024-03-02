@@ -57,15 +57,11 @@ public class AprilTagPipeline extends LinearOpMode {
     }
 
     public void getErrors(int tagID, HardwareMap hwM) {
-        telem.addData("PLSPsssssLS", "NO!!!");
-        telem.update();
+
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
 
         // Initialize the Apriltag Detection process
         initAprilTag(hwM);
-
-        telem.addData("PLSPhhhLS", "NO!!!");
-        telem.update();
 
         setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 

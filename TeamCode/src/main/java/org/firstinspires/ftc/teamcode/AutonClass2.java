@@ -401,17 +401,90 @@ public class AutonClass2 extends LinearOpMode {
             //Blue Far Left
         } else if (!redAlliance && isFar && blueMark == 1) {
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+                    .strafeTo(new Vector2d(-50, 30))
+                    .turn(Math.toRadians(-90))
+                    .forward(18)
+                    .waitSeconds(0.1)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .waitSeconds(0.1)
+                    .back(15)
+                    .strafeRight(20)
+                    .turn(Math.toRadians(-180))
+                    .back(65)
+                    .strafeTo(new Vector2d(42, 40))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeLeft(31)
+                    .back(16)
                     .build();
             //Blue Far Center
         } else if (!redAlliance && isFar && blueMark == 2) {
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+                    .back(65)
+                    .forward(22)
+                    .waitSeconds(0.1)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .waitSeconds(0.1)
+                    .back(12)
+                    .turn(Math.toRadians(90))
+                    .back(75)
+                    .strafeTo(new Vector2d(42, 34))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeLeft(25)
+                    .back(14)
                     .build();
             //Blue Far Right
         } else if (!redAlliance && isFar && blueMark == 3) {
             trajectory = drive.trajectorySequenceBuilder(new Pose2d())
-                    .back(3)
+                    .strafeTo(new Vector2d(-44, 50))
+                    //.turn(Math.toRadians(-90))
+                    .back(50)
+                    .forward(26)
+                    .waitSeconds(0.1)
+                    .addDisplacementMarker(() -> {
+                        try {
+                            spikeDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .waitSeconds(0.1)
+                    .back(16)
+                    .turn(Math.toRadians(90))
+                    .back(72)
+                    .strafeTo(new Vector2d(42, 25))
+                    .addDisplacementMarker(() -> {
+                        try {
+                            boardDrop();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
+                    .strafeLeft(18)
+                    .back(12)
                     .build();
         }
 
