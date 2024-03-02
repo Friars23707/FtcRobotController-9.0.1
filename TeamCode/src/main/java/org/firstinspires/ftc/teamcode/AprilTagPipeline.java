@@ -43,48 +43,42 @@ public class AprilTagPipeline extends LinearOpMode {
     }
 
     public void orient(SampleMecanumDrive drive, int tagID, HardwareMap hwM) {
-        telem.addData("PLSPLS", yawError);
-        telem.addData("PLSPLS2", bearningError);
-        telem.update();
         getErrors(tagID, hwM);
-        telem.addData("erros", "found");
-        telem.addData("range", desiredTag.ftcPose.range);
-        telem.addData("bearing", bearningError);
-        telem.addData("yaw", desiredTag.ftcPose.yaw);
+        telem.addData("LOOPING", true);
         telem.update();
-        sleep(5000);
+        sleep(100);
         if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
         TrajectorySequence fix3 = drive.trajectorySequenceBuilder(new Pose2d())
-                //.strafeRight(bearningError) //yawError
-                //.back(rangeError-12) //rangeError-12
-                .turn(Math.toRadians(yawError * 1.1)) //Math.toRadians(bearningError)
+                //.strafeRight(bearningError)
+                //.back(rangeError-12)
+                .turn(Math.toRadians(yawError * 1.1))
                 .build();
         drive.followTrajectorySequence(fix3);
         telem.addData("RUNNING RR", "YESSSSS");
         telem.update();
-        sleep(1000);
+        sleep(100);
         getErrors(tagID, hwM);
         if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
         TrajectorySequence fix4 = drive.trajectorySequenceBuilder(new Pose2d())
-                .strafeRight(-bearningError + 0.5) //yawError
-                .back(rangeError-12) //rangeError-12
-                //.turn(Math.toRadians(yawError * 1.05)) //Math.toRadians(bearningError)
+                .strafeRight(-bearningError + 0.5)
+                .back(rangeError-12)
+                //.turn(Math.toRadians(yawError * 1.05))
                 .build();
         drive.followTrajectorySequence(fix4);
-        sleep(1000);
+        sleep(100);
         getErrors(tagID, hwM);
         if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
         telem.addData("YAW", yawError);
         telem.update();
         TrajectorySequence fix5 = drive.trajectorySequenceBuilder(new Pose2d())
-                //.strafeRight(bearningError) //yawError
-                //.back(rangeError-12) //rangeError-12
-                .turn(Math.toRadians(yawError * 1.1)) //Math.toRadians(bearningError)
+                //.strafeRight(bearningError)
+                //.back(rangeError-12)
+                .turn(Math.toRadians(yawError * 1.1))
                 .build();
         drive.followTrajectorySequence(fix5);
-        telem.addData("BRUHHHH", "NO");
+        telem.addData("finished trajectory!!", "YAY");
         telem.update();
-        sleep(1000);
+        sleep(100);
         return;
     }
 

@@ -133,6 +133,8 @@ public class AdamsAuton extends LinearOpMode {
         telem.addData("WAITING ", timeToWait);
         telem.update();
 
+        aprilTagP.initVision(hwM);
+
         if (timeToWait > 0) {
             sleep((long) (timeToWait*1000));
         }
@@ -466,10 +468,8 @@ public class AdamsAuton extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
-        /*aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
-        TrajectorySequence fix1 = orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
-        drive.followTrajectorySequence(fix1);
-*/
+        aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
+
         leftArm.setPower(0.5);
         rightArm.setPower(0.5);
         wristMotor.setPower(0.5);
