@@ -134,7 +134,7 @@ public class AutonClass2 extends LinearOpMode {
         telem.addData("WAITING ", timeToWait);
         telem.update();
 
-        aprilTagP.initVision(hwM);
+        // aprilTagP.initVision(hwM);
 
         if (timeToWait > 0) {
             sleep((long) (timeToWait*1000));
