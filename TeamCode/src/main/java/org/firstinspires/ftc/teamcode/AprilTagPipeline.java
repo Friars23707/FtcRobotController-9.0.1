@@ -1,17 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -20,8 +14,8 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.openftc.easyopencv.OpenCvCamera;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -41,29 +35,62 @@ public class AprilTagPipeline extends LinearOpMode {
         telem = tm;
     }
 
+    public  void initVision(HardwareMap hwM) {
+        // Initialize the Apriltag Detection process
+        initAprilTag(hwM);
+
+        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
+    }
+
     public void orient(SampleMecanumDrive drive, int tagID, HardwareMap hwM) {
         telem.addData("PLSPLS", yawError);
         telem.addData("PLSPLS2", bearningError);
         telem.update();
         getErrors(tagID, hwM);
+        telem.addData("erros", "found");
+        telem.addData("range", desiredTag.ftcPose.range);
+        telem.addData("bearing", bearningError);
+        telem.addData("yaw", desiredTag.ftcPose.yaw);
+        telem.update();
+        sleep(5000);
         if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
-        sleep(1000);
         TrajectorySequence fix3 = drive.trajectorySequenceBuilder(new Pose2d())
-                //.strafeRight(yawError) //yawError
+                //.strafeRight(bearningError) //yawError
                 //.back(rangeError-12) //rangeError-12
-                .turn(Math.toRadians(bearningError * 5)) //Math.toRadians(bearningError)
+                .turn(Math.toRadians(yawError * 1.1)) //Math.toRadians(bearningError)
                 .build();
         drive.followTrajectorySequence(fix3);
+        telem.addData("RUNNING RR", "YESSSSS");
+        telem.update();
+        sleep(1000);
+        getErrors(tagID, hwM);
+        if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
+        TrajectorySequence fix4 = drive.trajectorySequenceBuilder(new Pose2d())
+                .strafeRight(-bearningError + 0.5) //yawError
+                .back(rangeError-12) //rangeError-12
+                //.turn(Math.toRadians(yawError * 1.05)) //Math.toRadians(bearningError)
+                .build();
+        drive.followTrajectorySequence(fix4);
+        sleep(1000);
+        getErrors(tagID, hwM);
+        if (bearningError == 0.0 || yawError == 0.0 || rangeError == 0.0) { return; }
+        telem.addData("YAW", yawError);
+        telem.update();
+        TrajectorySequence fix5 = drive.trajectorySequenceBuilder(new Pose2d())
+                //.strafeRight(bearningError) //yawError
+                //.back(rangeError-12) //rangeError-12
+                .turn(Math.toRadians(yawError * 1.1)) //Math.toRadians(bearningError)
+                .build();
+        drive.followTrajectorySequence(fix5);
+        telem.addData("BRUHHHH", "NO");
+        telem.update();
+        sleep(1000);
+        return;
     }
 
     public void getErrors(int tagID, HardwareMap hwM) {
 
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
-
-        // Initialize the Apriltag Detection process
-        initAprilTag(hwM);
-
-        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
 
         while (!isStopRequested() && !targetFound) {
             desiredTag  = null;
@@ -96,11 +123,19 @@ public class AprilTagPipeline extends LinearOpMode {
                 }
             }
 
+            if (targetFound) {
+                break;
+            }
+
 
         }
 
+        telem.addData("DONE","D");
+        telem.update();
+
+        sleep(1000);
         if (targetFound) {
-            bearningError = desiredTag.ftcPose.bearing;
+            bearningError = desiredTag.ftcPose.x;
             yawError = desiredTag.ftcPose.yaw;
             rangeError = desiredTag.ftcPose.range;
         }
@@ -110,43 +145,17 @@ public class AprilTagPipeline extends LinearOpMode {
             telem.addData("range", desiredTag.ftcPose.range);
             telem.addData("bearing", desiredTag.ftcPose.bearing);
             telem.addData("yaw", desiredTag.ftcPose.yaw);
+            telem.update();
+            return;
         } else {
             telem.addData("\n>","No detections\n");
+            telem.update();
         }
-        telem.update();
 
     }
 
     public void runOpMode() {
-        boolean targetFound     = false;    // Set to true when an AprilTag target is detected
 
-        // Initialize the Apriltag Detection process
-        initAprilTag(hardwareMap);
-
-        setManualExposure(6, 250);  // Use low exposure time to reduce motion blur
-
-        waitForStart();
-
-        while (opModeIsActive()) {
-            targetFound = false;
-            desiredTag  = null;
-
-            // Step through the list of detected tags and look for a matching tag
-            List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-            for (AprilTagDetection detection : currentDetections) {
-                // Look to see if we have size info on this tag.
-                if (detection.metadata != null) {
-                    // Yes, we want to use this tag.
-                    if (detection.id == 5 || detection.id == 2) {
-                        targetFound = true;
-                        desiredTag = detection;
-                        break;
-                    }
-                }
-            }
-
-
-        }
     }
     private void initAprilTag(HardwareMap hwM) {
         // Create the AprilTag processor by using a builder.
@@ -181,7 +190,9 @@ public class AprilTagPipeline extends LinearOpMode {
 
         // Make sure camera is streaming before we try to set the exposure controls
         if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-            while (!isStopRequested() && (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+            while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                telem.addData("WAITING", visionPortal.getCameraState());
+                telem.update();
                 sleep(20);
             }
         }

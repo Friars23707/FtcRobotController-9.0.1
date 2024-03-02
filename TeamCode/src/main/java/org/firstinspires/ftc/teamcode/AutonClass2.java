@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.openftc.easyopencv.OpenCvCamera;
 
 
 public class AutonClass2 extends LinearOpMode {
@@ -45,7 +46,6 @@ public class AutonClass2 extends LinearOpMode {
     public DistanceSensor distC;
     public DistanceSensor distBL;
     public DistanceSensor distBR;
-
 
     AutonOrientation2 orient;
     AprilTagPipeline aprilTagP;
@@ -134,6 +134,8 @@ public class AutonClass2 extends LinearOpMode {
         telem.addData("WAITING ", timeToWait);
         telem.update();
 
+        aprilTagP.initVision(hwM);
+
         if (timeToWait > 0) {
             sleep((long) (timeToWait*1000));
         }
@@ -183,7 +185,7 @@ public class AutonClass2 extends LinearOpMode {
                         }
                     })
                     .back(20)
-                    .strafeTo(new Vector2d(40, -34))
+                    .strafeTo(new Vector2d(40, -36))
                     .addDisplacementMarker(() -> {
                         try {
                             boardDrop();
@@ -191,7 +193,7 @@ public class AutonClass2 extends LinearOpMode {
                             throw new RuntimeException(e);
                         }
                     })
-                    .strafeRight(24)
+                    .strafeRight(26)
                     .back(15)
                     .build();
             //Red Near Right
@@ -360,7 +362,7 @@ public class AutonClass2 extends LinearOpMode {
                         }
                     })
                     .back(20)
-                    .strafeTo(new Vector2d(42, 34))
+                    .strafeTo(new Vector2d(42, 38))
                     .addDisplacementMarker(() -> {
                         try {
                             boardDrop();
@@ -368,7 +370,7 @@ public class AutonClass2 extends LinearOpMode {
                             throw new RuntimeException(e);
                         }
                     })
-                    .strafeLeft(24)
+                    .strafeLeft(28)
                     .back(15)
                     .build();
             //Blue Near Right
@@ -378,7 +380,7 @@ public class AutonClass2 extends LinearOpMode {
                     .setReversed(false)
                     .strafeTo(new Vector2d(25, 32))
                     .turn(Math.toRadians(90))
-                    .forward(18)
+                    .forward(17)
                     .addDisplacementMarker(() -> {
                        try {
                             spikeDrop();
@@ -386,7 +388,7 @@ public class AutonClass2 extends LinearOpMode {
                             throw new RuntimeException(e);
                         }
                     })
-                    .strafeTo(new Vector2d(42, 28))
+                    .strafeTo(new Vector2d(42, 33))
                     .addDisplacementMarker(() -> {
                         try {
                             boardDrop();
@@ -394,7 +396,7 @@ public class AutonClass2 extends LinearOpMode {
                             throw new RuntimeException(e);
                         }
                     })
-                    .strafeLeft(18)
+                    .strafeLeft(24)
                     .back(12)
                     .build();
 
@@ -515,6 +517,8 @@ public class AutonClass2 extends LinearOpMode {
             telem.update();
             sleep(10);
         }
+        telem.addData("UISBKYGSV","AIGUYGSFYFST");
+        telem.update();
         pipe.stop();
     }
 
@@ -524,7 +528,8 @@ public class AutonClass2 extends LinearOpMode {
     }
 
     public void boardDrop() throws InterruptedException {
-        /*aprilTagP.orient(drive, redAlliance ? redMark : blueMark, hwM);
+        /*aprilTagP.initVision(hwM);
+        aprilTagP.orient(drive, 2, hwM); // redAlliance ? redMark : blueMark
         TrajectorySequence fix1 = orient.orientRobot(distBR, distBL, redAlliance ? redMark : blueMark);
         drive.followTrajectorySequence(fix1);
 */

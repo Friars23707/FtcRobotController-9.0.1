@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.Camera;
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -153,5 +154,6 @@ public class EOCV_Pipe1 extends OpenCvPipeline {
         cam.stopStreaming();
         cam.pauseViewport();
         cam.stopRecordingPipeline();
+        cam.closeCameraDevice();
     }
 }

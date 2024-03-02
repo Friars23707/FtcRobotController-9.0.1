@@ -28,6 +28,8 @@ public class April2 extends LinearOpMode {
         this.drive = drive;
         this.hardwareMap = hardwareMap;
         this.telemetry = telemetry;
+        telemetry.addData("IDK", "PLS");
+        telemetry.update();
     }
 
     public void navigateToTag(int targetTagId) throws InterruptedException {
@@ -35,10 +37,20 @@ public class April2 extends LinearOpMode {
         AprilTagDetection desiredTag = null;
         boolean targetFound = false;
 
+        telemetry.addData("target", !targetFound);
+        telemetry.update();
+
         while (!isStopRequested() && !targetFound) {
             List<AprilTagDetection> currentDetections = aprilTag.getDetections();
 
+            telemetry.addData("target", "HI");
+            telemetry.addData("Size", currentDetections.size());
+            telemetry.update();
+
+
             for (AprilTagDetection detection : currentDetections) {
+                telemetry.addData("ID", detection.id);
+                telemetry.update();
                 if (isStopRequested()) {
                     break;
                 }

@@ -18,6 +18,8 @@ public class AprilTagTest2 extends LinearOpMode {
 
 
         april2.AprilTagNavigation(drive, hardwareMap, telemetry);
+        telemetry.addData("nect", "hi");
+        telemetry.update();
         april2.navigateToTag(2);
     }
 }

@@ -17,7 +17,7 @@ public class AprilTagTest extends LinearOpMode {
         aprilTagP = new AprilTagPipeline(telemetry);
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-
+        aprilTagP.initVision(hardwareMap);
         aprilTagP.orient(drive, 2, hardwareMap);
     }
 }
