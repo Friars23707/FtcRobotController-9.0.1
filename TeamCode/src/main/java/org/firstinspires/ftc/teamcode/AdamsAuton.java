@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,7 +16,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-
+@Autonomous()
 public class AdamsAuton extends LinearOpMode {
 
     private HardwareMap hardwareMap;
@@ -307,7 +308,7 @@ public class AdamsAuton extends LinearOpMode {
                     .strafeTo(new Vector2d(40, 40))
                     .strafeRight(2)
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
                     .strafeLeft(30)
                     .back(15)
                     .build();
@@ -329,7 +330,7 @@ public class AdamsAuton extends LinearOpMode {
                     .back(20)
                     .strafeTo(new Vector2d(42, 34))
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
                     .strafeLeft(24)
                     .back(15)
                     .build();
@@ -350,14 +351,15 @@ public class AdamsAuton extends LinearOpMode {
                     })
                     .strafeTo(new Vector2d(42, 28))
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(10, 60, Math.toRadians(90)))
                     .strafeLeft(18)
                     .back(12)
                     .build();
 
             //Blue Far Left
         } else if (!redAlliance && isFar && blueMark == 1) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            drive.setPoseEstimate(new Pose2d(-35, 60, Math.toRadians(90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .strafeTo(new Vector2d(-50, 30))
                     .turn(Math.toRadians(-90))
                     .forward(18)
@@ -376,13 +378,14 @@ public class AdamsAuton extends LinearOpMode {
                     .back(65)
                     .strafeTo(new Vector2d(42, 40))
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .strafeLeft(31)
                     .back(16)
                     .build();
             //Blue Far Center
         } else if (!redAlliance && isFar && blueMark == 2) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            drive.setPoseEstimate(new Pose2d(-35, 60, Math.toRadians(90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .back(65)
                     .forward(22)
                     .waitSeconds(0.1)
@@ -399,13 +402,14 @@ public class AdamsAuton extends LinearOpMode {
                     .back(75)
                     .strafeTo(new Vector2d(42, 34))
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .strafeLeft(25)
                     .back(14)
                     .build();
             //Blue Far Right
         } else if (!redAlliance && isFar && blueMark == 3) {
-            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            drive.setPoseEstimate(new Pose2d(-35, 60, Math.toRadians(90)));
+            trajectory = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .strafeTo(new Vector2d(-44, 50))
                     //.turn(Math.toRadians(-90))
                     .back(50)
@@ -424,7 +428,7 @@ public class AdamsAuton extends LinearOpMode {
                     .back(72)
                     .strafeTo(new Vector2d(42, 25))
                     .build();
-            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(-90)))
+            park = drive.trajectorySequenceBuilder(new Pose2d(-35, 60, Math.toRadians(90)))
                     .strafeLeft(18)
                     .back(12)
                     .build();

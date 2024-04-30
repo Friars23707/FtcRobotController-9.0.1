@@ -85,8 +85,9 @@ public class AprilTagPipeline extends LinearOpMode {
     public void getErrors(int tagID, HardwareMap hwM) {
 
         boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+        int n = 0;
 
-        while (!isStopRequested() && !targetFound) {
+        while (!isStopRequested() && !targetFound && n < 3) {
             desiredTag  = null;
 
             // Step through the list of detected tags and look for a matching tag
@@ -121,7 +122,7 @@ public class AprilTagPipeline extends LinearOpMode {
                 break;
             }
 
-
+            ++n;
         }
 
         telem.addData("DONE","D");
