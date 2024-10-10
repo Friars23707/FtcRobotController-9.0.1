@@ -16,6 +16,7 @@ import java.util.List;
 public class Main extends LinearOpMode {
 
     int armPos = 0;
+    int turnSpeed = 1;
 
 
     // Declare OpMode members for each of the 4 motors.
@@ -116,12 +117,19 @@ public class Main extends LinearOpMode {
                 reverseConst = -1;
             }
 
+            //Slow Turns
+            if (gamepad1.dpad_up) {
+                turnSpeed = 1;
+            } else if (gamepad1.dpad_down) {
+                turnSpeed = 3;
+            }
+
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
             double axial = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
             double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x/3; //Slow down turns
+            double yaw = gamepad1.right_stick_x/turnSpeed; //Slow down turns
 
             // Combine the joystick requests for each axis-motion to determine each wheel's power.
             // Set up a variable for each drive wheel to save the power level for telemetry.
@@ -167,6 +175,7 @@ public class Main extends LinearOpMode {
             rightFrontDrive.setPower(rightFrontPower*reverseConst);
             leftBackDrive.setPower(leftBackPower*reverseConst);
             rightBackDrive.setPower(rightBackPower*reverseConst);
+
 
             /*Logans attempt at arm code
             Notes as of 11/3/23: arm works up and down, more power needed to reset
