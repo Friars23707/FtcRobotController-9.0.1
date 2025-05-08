@@ -62,7 +62,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Concept: AprilTag Easy", group = "Concept")
-
+@Disabled
 public class ConceptAprilTagEasy extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -84,7 +84,7 @@ public class ConceptAprilTagEasy extends LinearOpMode {
 
         // Wait for the DS start button to be touched.
         telemetry.addData("DS preview on/off", "3 dots, Camera Stream");
-        telemetry.addData(">", "Touch Play to start OpMode");
+        telemetry.addData(">", "Touch START to start OpMode");
         telemetry.update();
         waitForStart();
 
